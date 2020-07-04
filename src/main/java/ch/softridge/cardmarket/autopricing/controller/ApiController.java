@@ -60,12 +60,6 @@ public class ApiController {
         return "Index";
     }
 
-    @GetMapping("/Test")
-    public void test(){
-        cardService.addCard(new Card("title", "set", Rarity.COMMON, 1, 0.2, 0.4));
-        logger.info(String.valueOf(cardService.findAll().size()));
-    }
-
     @GetMapping("/mkmRequest")
     public void account() {
     }
