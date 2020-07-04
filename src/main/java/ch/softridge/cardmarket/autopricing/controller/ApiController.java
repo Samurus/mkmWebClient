@@ -2,6 +2,8 @@ package ch.softridge.cardmarket.autopricing.controller;
 
 import ch.softridge.cardmarket.autopricing.model.Card;
 import ch.softridge.cardmarket.autopricing.model.MkmAccount;
+import ch.softridge.cardmarket.autopricing.model.Rarity;
+import ch.softridge.cardmarket.autopricing.service.CardService;
 import ch.softridge.cardmarket.autopricing.service.MkmService;
 import com.fasterxml.jackson.core.FormatSchema;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,12 +52,19 @@ public class ApiController {
 
     @Autowired
     private MkmService mkmService;
+    @Autowired
+    private CardService cardService;
 
     @GetMapping("/")
     public String index(){
         return "Index";
     }
 
+    @GetMapping("/Test")
+    public void test(){
+        cardService.addCard(new Card("title", "set", Rarity.COMMON, 1, 0.2, 0.4));
+        logger.info(String.valueOf(cardService.findAll().size()));
+    }
 
     @GetMapping("/mkmRequest")
     public void account() {
