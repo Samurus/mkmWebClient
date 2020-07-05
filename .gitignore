@@ -20,7 +20,9 @@ build/
 *.iml
 *.ipr
 out/
-resources/
+application-prod.yml
+application-dev.yml
+application-test.yml
 
 ### NetBeans ###
 /nbproject/private/

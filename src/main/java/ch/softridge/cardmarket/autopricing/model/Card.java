@@ -1,8 +1,5 @@
 package ch.softridge.cardmarket.autopricing.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 
 /**
@@ -10,7 +7,6 @@ import javax.persistence.*;
  * @Date 29.06.20
  */
 @Entity
-@Getter @Setter
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"title","set"})})
 public class Card {
     @Id
@@ -42,5 +38,67 @@ public class Card {
     }
     protected Card(){}
 
+    public void setSet(String set) {
+        this.set = set;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setPrice_trend(double price_trend) {
+        this.price_trend = price_trend;
+    }
+
+    public void setMkmCard(MkmCard mkmCard) {
+        this.mkmCard = mkmCard;
+    }
+
+    public void setScryfallCard(ScryfallCard scryfallCard) {
+        this.scryfallCard = scryfallCard;
+    }
+
+    public String getSet() {
+        return set;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getPrice_trend() {
+        return price_trend;
+    }
+
+    public MkmCard getMkmCard() {
+        return mkmCard;
+    }
+
+    public ScryfallCard getScryfallCard() {
+        return scryfallCard;
+    }
 }

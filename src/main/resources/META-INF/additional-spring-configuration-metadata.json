@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "mkm.appToken",
+      "type": "java.lang.String",
+      "description": "App Token for mkm API."
+  },
+    {
+      "name": "mkm.appSecret",
+      "type": "java.lang.String",
+      "description": "App Key for mkm API."
+    },
+    {
+      "name": "mkm.accessToken",
+      "type": "java.lang.String",
+      "description": "Access Token for mkm API."
+    },
+    {
+      "name": "mkm.accessTokenSecret",
+      "type": "java.lang.String",
+      "description": "Access Key for mkm API."
+    }
+  ] }

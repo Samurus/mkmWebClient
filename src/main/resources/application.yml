@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+
+spring:
+  profiles:
+    active: dev
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    generate-ddl: true
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/mkmClient_db_local
+    username: admin
+    password: secret
