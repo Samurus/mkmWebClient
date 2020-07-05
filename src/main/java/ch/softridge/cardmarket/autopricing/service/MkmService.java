@@ -28,6 +28,8 @@ import java.util.Map;
 /**
  * @author Kevin Zellweger
  * @Date 01.07.20
+ *
+ * Helper Service responsible to build the Requests to the MKM API
  */
 @Service
 public class MkmService {
@@ -43,44 +45,63 @@ public class MkmService {
     private String _apiUrl;
 
     private HttpEntity entity;
-    private RestTemplate restTemplate = new RestTemplate();
-    private HttpHeaders headers = new HttpHeaders();
-    private static Logger log = LoggerFactory.getLogger(MkmService.class);
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final HttpHeaders headers = new HttpHeaders();
+    private static final Logger log = LoggerFactory.getLogger(MkmService.class);
 
-    protected MkmService() {
-    }
-
-    ;
-
+    /**
+     * Request to the MKM-API without specific Query Parameters
+     * Response is logged on Loglevel DEBUG
+     *
+     * Be aware that returned JSON is not parsed in any way in this Method.
+     * If you want to manipulate the Structure first use the Method with Type <String>
+     *
+     * @param type Generic Return Type Class
+     * @param route MKM API Endpoint
+     * @param <T> Generic Return Type
+     * @return Instance of the given Type if this is possible.
+     */
     public <T> T mkmRequest(Class<T> type, String route) {
         String url = _apiUrl + route;
-        //request(mkmRequest);
         headers.set("Authorization", encryptHttpHeader(url, null));
         entity = new HttpEntity(headers);
         ResponseEntity<T> res = restTemplate.exchange(url, HttpMethod.GET, entity, type);
-        log.info("MKM Return Code:" + res.getStatusCode().toString());
-        log.info("MKM Body:" + res.getBody().toString());
+        log.debug("MKM Return Code:" + res.getStatusCode().toString());
+        log.debug("MKM Body:" + res.getBody().toString());
         return res.getBody();
     }
+
+    /**
+     * Overrides mkmRequest(Class<T> type, String route)
+     * @param type Generic Return Type Class
+     * @param route MKM API Endpoint
+     * @param params Query Parameters
+     * @param <T> Generic Return Type
+     * @return Instance of the given Type if this is possible.
+     */
 
     public <T> T mkmRequest(Class<T> type, String route, Map<String, String> params) {
         String url = _apiUrl + route;
         headers.set("Authorization", encryptHttpHeader(url, params));
         entity = new HttpEntity(headers);
-        log.info(entity.toString());
         url += "?";
         StringBuilder sb = new StringBuilder();
         sb.append(url);
-        params.forEach((k, v) -> sb.append(k+"="+v+"&"));
+        params.forEach((k, v) -> sb.append(k).append("=").append(v).append("&"));
         sb.deleteCharAt(sb.length()-1);
         ResponseEntity<T> res = restTemplate.exchange(sb.toString(), HttpMethod.GET, entity, type);
-        log.info("MKM Return Code:" + res.getStatusCode().toString());
-        log.info("MKM Body:" + res.getBody().toString());
+        log.debug("MKM Return Code:" + res.getStatusCode().toString());
+        log.debug("MKM Body:" + res.getBody().toString());
         return res.getBody();
     }
 
+    /**
+     * Compile Header of the Request according to the MKM-API OAuth1 Docs
+     * @param url Complete URL String
+     * @param queryParams Query params (optional)
+     * @return Authorization Property for MKM Request
+     */
     private String encryptHttpHeader(String url, Map<String, String> queryParams) {
-        log.info("URL: ", url);
         List<String> params = new ArrayList<>();
         String realm = url;
         String oauth_version = "1.0";
