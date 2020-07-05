@@ -1,12 +1,8 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,11 +13,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -178,20 +172,5 @@ public class MkmService {
     private String rawurlencode(String str) throws UnsupportedEncodingException {
         return URLEncoder.encode(str, "UTF-8");
     }
-
-    public <Card> List<Card> loadObjectList(Class<Card> type, String fileName) {
-        try {
-            CsvSchema bootstrapSchema = CsvSchema.emptySchema().withHeader();
-            CsvMapper mapper = new CsvMapper();
-            File file = new ClassPathResource(fileName).getFile();
-            MappingIterator<Card> readValues =
-                    mapper.reader(type).with(bootstrapSchema).readValues(file);
-            return readValues.readAll();
-        } catch (Exception e) {
-            //logger.error("Error occurred while loading object list from file " + fileName, e);
-            return Collections.emptyList();
-        }
-    }
-
 }
 

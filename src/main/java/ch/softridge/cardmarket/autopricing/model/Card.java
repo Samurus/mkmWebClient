@@ -36,6 +36,16 @@ public class Card {
         this.price = price;
         this.price_trend = price_trend;
     }
+
+    public Card(String[] sorterResult){
+        this.title = sorterResult[2];
+        this.set = sorterResult[0];
+        this.rarity = parseRarity(sorterResult[1]);
+        this.count = parseCount(sorterResult[3]);
+        this.price = parsePrice(sorterResult[4]);
+        this.price_trend = parsePrice_trend(sorterResult[5]);
+    }
+
     protected Card(){}
 
     public void setSet(String set) {
@@ -50,16 +60,32 @@ public class Card {
         this.rarity = rarity;
     }
 
+    private Rarity parseRarity(String rarity) {
+        return Rarity.get(rarity);
+    }
+
     public void setCount(int count) {
         this.count = count;
+    }
+
+    private Integer parseCount(String count){
+        return Integer.valueOf(count);
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
+    private Double parsePrice(String price){
+        return Double.valueOf(price);
+    }
+
     public void setPrice_trend(double price_trend) {
         this.price_trend = price_trend;
+    }
+
+    private Double parsePrice_trend(String price_trend){
+        return Double.valueOf(price_trend);
     }
 
     public void setMkmCard(MkmCard mkmCard) {
