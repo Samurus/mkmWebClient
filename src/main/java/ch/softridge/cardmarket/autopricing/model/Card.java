@@ -1,93 +1,130 @@
 package ch.softridge.cardmarket.autopricing.model;
 
+import javax.persistence.*;
+
 /**
  * @author Kevin Zellweger
  * @Date 29.06.20
  */
+@Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"title","set"})})
 public class Card {
-//set,rarity,title,count,price,price_trend
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id; //Unique Id in our own DB
+
     private String set;
-    private String rarity;
     private String title;
+    private Rarity rarity;
     private int count;
     private double price;
     private double price_trend;
-    private int language = 1; //TODO make enum and on Setter
-    private int gameId = 1; //TODO make enum and on Setter
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private MkmCard mkmCard;
 
-    protected Card(){}
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private ScryfallCard scryfallCard;
 
-    public Card(String set, String rarity, String title, int count, double price, double price_trend) {
+    public Card(String title, String set, Rarity rarity, int count, double price, double price_trend){
+        this.title = title;
         this.set = set;
         this.rarity = rarity;
-        this.title = title;
         this.count = count;
         this.price = price;
         this.price_trend = price_trend;
     }
 
-    public String getSet() {
-        return set;
+    public Card(String[] sorterResult){
+        this.title = sorterResult[2];
+        this.set = sorterResult[0];
+        this.rarity = parseRarity(sorterResult[1]);
+        this.count = parseCount(sorterResult[3]);
+        this.price = parsePrice(sorterResult[4]);
+        this.price_trend = parsePrice_trend(sorterResult[5]);
     }
+
+    protected Card(){}
 
     public void setSet(String set) {
         this.set = set;
-    }
-
-    public String getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public double getPrice() {
-        return price;
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
+    }
+
+    private Rarity parseRarity(String rarity) {
+        return Rarity.get(rarity);
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    private Integer parseCount(String count){
+        return Integer.valueOf(count);
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
-    public double getPrice_trend() {
-        return price_trend;
+    private Double parsePrice(String price){
+        return Double.valueOf(price);
     }
 
     public void setPrice_trend(double price_trend) {
         this.price_trend = price_trend;
     }
 
+    private Double parsePrice_trend(String price_trend){
+        return Double.valueOf(price_trend);
+    }
+
+    public void setMkmCard(MkmCard mkmCard) {
+        this.mkmCard = mkmCard;
+    }
+
+    public void setScryfallCard(ScryfallCard scryfallCard) {
+        this.scryfallCard = scryfallCard;
+    }
+
+    public String getSet() {
+        return set;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
     public int getCount() {
         return count;
     }
 
-    public int getLanguage() {
-        return language;
+    public double getPrice() {
+        return price;
     }
 
-    public void setLanguage(int language) {
-        this.language = language;
+    public double getPrice_trend() {
+        return price_trend;
     }
 
-    public int getGameId() {
-        return gameId;
+    public MkmCard getMkmCard() {
+        return mkmCard;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
+    public ScryfallCard getScryfallCard() {
+        return scryfallCard;
     }
 }

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  mkmClient_db_local:
+    image: postgres
+    container_name: mkmClient_db_local
+    ports:
+      - "5432:5432"
+    env_file:
+      - database.env
+    volumes:
+      - mkm-database-data:/var/lib/postgresql/data/
+
+volumes:
+  mkm-database-data:

@@ -1,13 +1,29 @@
 package ch.softridge.cardmarket.autopricing.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Kevin Zellweger
  * @Date 29.06.20
+ *
+ * Configuration for custom Properties.
+ * Used in:
+ * - application-dev.yml
+ * - application-prod.yml
+ * - application-test.yml
+ *
+ * Those configuration contain the credentials to communicatie with the MKM-API.
+ * Therefore there are not stored on Github.
+ *
+ * Create your owen files in this format:
+ * mkm:
+ *   appToken: "Atl7XXXXXXXX"
+ *   appSecret: "YdQXXXXXXXXXXXXXXXXXXXXX"
+ *   accessToken: "CMXXXXXXXXXXXXXXXXXXXXXXXXX"
+ *   accessTokenSecret: "gLXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+ *   apiUrl: "https://sandbox.cardmarket.com/ws/v2.0/output.json/"
+ *
  */
 
 @Configuration
