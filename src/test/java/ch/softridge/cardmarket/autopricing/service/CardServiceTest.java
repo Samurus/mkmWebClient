@@ -22,7 +22,7 @@ public class CardServiceTest {
 
     @Test
     public void testReadCsv(){
-        List<Card> result = cardService.readSorterCSV("results.csv");
+        List<Card> result = cardService.readSorterCSV("src/test/resources/results.csv");
         Assertions.assertEquals(68,result.size());
     }
 

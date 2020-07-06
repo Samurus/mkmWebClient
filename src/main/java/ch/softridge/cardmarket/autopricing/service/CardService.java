@@ -48,6 +48,8 @@ public class CardService {
                     .map(line -> new Card(line.split(",", 6)))
                     .collect(Collectors.toList());
         } catch (IOException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
             throw new IllegalStateException("failed");
         }
     }
