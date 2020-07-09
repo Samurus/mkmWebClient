@@ -11,64 +11,72 @@
 <!-- Navigation -->
 <div th:insert="fragments/fragments.html :: header"></div>
 
-<div class="container">
-    <row>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3 py-3 px-3">
         <form class="form-inline d-flex justify-content-center">
             <i class="fas fa-search" aria-hidden="true"></i>
-            <input type="text" id="myInput" onkeyup="search()" placeholder="Search" class="form-control"
+            <input type="text" id="filter" placeholder="Search" class="form-control"
                    aria-label="Search">
         </form>
-    </row>
-    <row>
-        <table class="table table-hover bor" id="myTable">
-            <tr>
-                <th>Set</th>
-                <th>Rarity</th>
-                <th>Title</th>
-                <th>Count</th>
-                <th>Price</th>
-                <th>Price Trend</th>
-            </tr>
-            <tr th:each="card : ${cards}">
-                <td th:text="${card.getSet()}"></td>
-                <td th:text="${card.getRarity()}"></td>
-                <td th:text="${card.getTitle()}"></td>
-                <td><input th:value="${card.getCount()}" type="number" name="inCount" min="0" onchange="valueChanged(this)">
-                </td>
-                <td><label><input th:value="${card.getPrice()}" type="number" name="inPrice" step="0.01"
-                                  min="0.0" onchange="valueChanged(this)">€</label></td>
-                <td><label><input th:value="${card.getPrice_trend()}" type="number" name="inPriceTrend"
-                                  step="0.01" min="0.0" onchange="valueChanged(this)">€</label></td>
-            </tr>
-        </table>
-    </row>
+        </div>
+        <div class="col-md-9">
+            <table class="table table-hover bor" id="cardTable">
+                <tr class="d-flex">
+                    <th class="col-md-2">Set</th>
+                    <th class="col-md-2">Rarity</th>
+                    <th class="col-md-2">Title</th>
+                    <th class="col-md-2">Count</th>
+                    <th class="col-md-2">Price</th>
+                    <th class="col-md-2">Price Trend</th>
+                </tr>
+                <tr class="d-flex" th:each="card : ${cards}">
+                    <td class="col-md-2" th:text="${card.getSet()}"></td>
+                    <td class="col-md-2" th:text="${card.getRarity()}"></td>
+                    <td class="col-md-2" th:text="${card.getTitle()}"></td>
+                    <td class="col-md-2"><input class="col-md-9" th:value="${card.getCount()}" type="number" name="inCount" min="0" onchange="valueChanged(this)">
+                    </td>
+                    <td class="col-md-2"><label><input class="col-md-9" th:value="${card.getPrice()}" type="number" name="inPrice" step="0.01"
+                                                       min="0.0" onchange="valueChanged(this)"> €</label></td>
+                    <td class="col-md-2"><label><input class="col-md-9" th:value="${card.getPrice_trend()}" type="number" name="inPriceTrend"
+                                                       step="0.01" min="0.0" onchange="valueChanged(this)"> €</label></td>
+                </tr>
+            </table>
+        </div>
+        </div>
+    </div>
 </div>
 
 
 <div th:insert="fragments/fragments.html :: footer"></div>
-<script th:src="@{assets/datatable/datatables.js}"></script>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/1.16.0/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.5.0/js/bootstrap.min.js}"></script>
 
 <script>
     function filterTable(event) {
-        //TODO: Not quite yet but something
         var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
+        var rows = document.querySelector("#cardTable tbody").rows;
+        var td, cell;
 
-        for (var i = 0; i < rows.length; i++) {
-            var firstCol = rows[i].cells[0].textContent.toUpperCase();
-            var secondCol = rows[i].cells[1].textContent.toUpperCase();
-            if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
+        for (var i = 1; i < rows.length; i++) {
+            rows[i].setAttribute('class',"d-none");
+
+            td = rows[i].getElementsByTagName("td");
+            for (var j = 0; j < td.length; j++) {
+                cell = rows[i].getElementsByTagName("td")[j];
+                if (cell) {
+                    if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].setAttribute('class',"d-flex");
+
+                        break;
+                    }
+                }
             }
         }
     }
 
-    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+    document.querySelector('#filter').addEventListener('keyup', filterTable, false);
 </script>
 
 <script>
