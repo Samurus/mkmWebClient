@@ -5,6 +5,7 @@
     <title>MKM Webclient Cards</title>
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.5.0/css/bootstrap.min.css} "/>
     <link th:rel="stylesheet" th:href="@{webjars/font-awesome/5.13.0/css/all.css} "/>
+
 </head>
 <body>
 <!-- Navigation -->
@@ -12,42 +13,12 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
-            <div class="row py-2 px-5">
-                <form class="form-inline d-flex justify-content-center">
-                    <label class="col-form-label" for="setSearch"><i class="fas fa-search px-2" aria-hidden="true"></i></label>
-                    <input type="text" id="setSearch" onkeyup="search()" placeholder="Set" class="form-control"
-                           aria-label="Search">
-                </form>
-            </div>
-            <div class="row py-2 px-5">
-                <form class="form-inline d-flex justify-content-center">
-                    <label class="col-form-label" for="TitleSearch"><i class="fas fa-search px-2" aria-hidden="true"></i></label>
-                    <input type="text" id="TitleSearch" onkeyup="search()" placeholder="Title" class="form-control"
-                           aria-label="Search">
-                </form>
-            </div>
-            <div class="row py-2 px-5">
-                <form class="form-inline d-flex justify-content-center">
-                    <label class="col-form-label" for="countSearch"><i class="fas fa-search px-2" aria-hidden="true"></i></label>
-                    <input type="text" id="countSearch" onkeyup="search()" placeholder="Count" class="form-control"
-                           aria-label="Search">
-                </form>
-            </div>
-            <div class="row py-2 px-5">
-                <form class="form-inline d-flex justify-content-center">
-                    <label class="col-form-label" for="priceSearch"><i class="fas fa-search px-2" aria-hidden="true"></i></label>
-                    <input type="text" id="priceSearch" onkeyup="search()" placeholder="Price" class="form-control"
-                           aria-label="Search">
-                </form>
-            </div>
-            <div class="row py-2 px-5">
-                <form class="form-inline d-flex justify-content-center">
-                    <label class="col-form-label" for="priceTrendSearch"><i class="fas fa-search px-2" aria-hidden="true"></i></label>
-                    <input type="text" id="priceTrendSearch" onkeyup="search()" placeholder="Price Trend" class="form-control"
-                           aria-label="Search">
-                </form>
-            </div>
+        <div class="col-3 py-3 px-3">
+        <form class="form-inline d-flex justify-content-center">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="text" id="filter" placeholder="Search" class="form-control"
+                   aria-label="Search">
+        </form>
         </div>
         <div class="col-md-9">
             <table class="table table-hover bor" id="cardTable">
@@ -66,11 +37,12 @@
                     <td class="col-md-2"><input class="col-md-9" th:value="${card.getCount()}" type="number" name="inCount" min="0" onchange="valueChanged(this)">
                     </td>
                     <td class="col-md-2"><label><input class="col-md-9" th:value="${card.getPrice()}" type="number" name="inPrice" step="0.01"
-                                      min="0.0" onchange="valueChanged(this)">€</label></td>
+                                                       min="0.0" onchange="valueChanged(this)"> €</label></td>
                     <td class="col-md-2"><label><input class="col-md-9" th:value="${card.getPrice_trend()}" type="number" name="inPriceTrend"
-                                      step="0.01" min="0.0" onchange="valueChanged(this)">€</label></td>
+                                                       step="0.01" min="0.0" onchange="valueChanged(this)"> €</label></td>
                 </tr>
             </table>
+        </div>
         </div>
     </div>
 </div>
@@ -83,22 +55,28 @@
 
 <script>
     function filterTable(event) {
-        //TODO: Not quite yet but something
         var filter = event.target.value.toUpperCase();
         var rows = document.querySelector("#cardTable tbody").rows;
+        var td, cell;
 
-        for (var i = 0; i < rows.length; i++) {
-            var firstCol = rows[i].cells[0].textContent.toUpperCase();
-            var secondCol = rows[i].cells[1].textContent.toUpperCase();
-            if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
+        for (var i = 1; i < rows.length; i++) {
+            rows[i].setAttribute('class',"d-none");
+
+            td = rows[i].getElementsByTagName("td");
+            for (var j = 0; j < td.length; j++) {
+                cell = rows[i].getElementsByTagName("td")[j];
+                if (cell) {
+                    if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].setAttribute('class',"d-flex");
+
+                        break;
+                    }
+                }
             }
         }
     }
 
-    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+    document.querySelector('#filter').addEventListener('keyup', filterTable, false);
 </script>
 
 <script>
