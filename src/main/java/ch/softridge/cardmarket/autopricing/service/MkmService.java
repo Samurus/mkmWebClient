@@ -73,7 +73,6 @@ public class MkmService {
      * @param <T> Generic Return Type
      * @return Instance of the given Type if this is possible.
      */
-
     public <T> T mkmRequest(Class<T> type, String route, Map<String, String> params) {
         String url = _apiUrl + route;
         headers.set("Authorization", encryptHttpHeader(url, params));

@@ -49,4 +49,11 @@ public class MkmServiceTest {
 
     }
 
+    @Test
+    public void getStockTest(){
+        //TODO: Find suitable assertions
+        String res;
+        res = service.mkmRequest(String.class,"stock");
+        log.info(res);
+    }
 }

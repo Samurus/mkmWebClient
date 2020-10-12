@@ -7,15 +7,26 @@ import javax.persistence.*;
  * @Date 29.06.20
  */
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"title","set"})})
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"title","set","condition","isFoil","isSigned","isPlayset"})})
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; //Unique Id in our own DB
 
+    @Column(name = "set")
     private String set;
+    @Column(name = "title")
     private String title;
+    @Column(name = "rarity")
     private Rarity rarity;
+    @Column(name = "condition")
+    private Condition condition;
+    @Column(name = "isFoil")
+    private boolean isFoil;
+    @Column(name = "isSigned")
+    private boolean isSigned;
+    @Column(name = "isPlayset")
+    private boolean isPlayset;
     private int count;
     private double price;
     private double price_trend;
