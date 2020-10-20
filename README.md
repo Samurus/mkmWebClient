@@ -122,8 +122,8 @@ TBD
 
 I will try to achieve the following Major Release Dates
 
-* Release **V1.0-0**: 08/20
-* Release **V1.1-0**: 09/20
+* Release **V1.0-0**: 12/20
+* Release **V1.1-0**: 02/21
 
 See the [open issues](https://github.com/KZellweger/mkmWebClient/issues) for a list of proposed features (and known issues).
 
