@@ -20,8 +20,8 @@ public class ProductFilter {
 	private Integer start;
 	private Integer maxResults;
 
-	public ProductFilter(String searchQuery) {
-		this.searchQuery = searchQuery;
+	public ProductFilter(String search) {
+		this.searchQuery = search;
 	}
 
 	@Override

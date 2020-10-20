@@ -25,7 +25,10 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'com.h2database:h2'
     // Dev Tools
-    implementation 'org.projectlombok:lombok-maven-plugin:1.18.12.0'
+    compileOnly 'org.projectlombok:lombok:1.18.14'
+    annotationProcessor 'org.projectlombok:lombok:1.18.14'
+    testCompileOnly 'org.projectlombok:lombok:1.18.14'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.14'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     //Formats
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.11.1'

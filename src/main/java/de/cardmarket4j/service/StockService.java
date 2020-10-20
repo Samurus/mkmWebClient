@@ -1,12 +1,6 @@
 package de.cardmarket4j.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.gson.JsonElement;
-
 import de.cardmarket4j.AbstractService;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Article;
@@ -15,6 +9,11 @@ import de.cardmarket4j.entity.enumeration.Game;
 import de.cardmarket4j.entity.enumeration.HTTPMethod;
 import de.cardmarket4j.util.CardMarketUtils;
 import de.cardmarket4j.util.JsonIO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StockService extends AbstractService {
 	public StockService(CardMarketService cardMarket) {
@@ -198,7 +197,7 @@ public class StockService extends AbstractService {
 		}
 		xml.append("</request>");
 		JsonElement response = request("stock", HTTPMethod.POST, xml.toString());
-
+        // TODO: might be nice if failed requests would throw a runtime exception with the error message
 		List<Article> listArticle = new ArrayList<>();
 		for (JsonElement jElement : response.getAsJsonObject().get("inserted").getAsJsonArray()) {
 			listArticle.add(JsonIO.getGson().fromJson(jElement.getAsJsonObject().get("idArticle"), Article.class));

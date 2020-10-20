@@ -1,13 +1,12 @@
 package de.cardmarket4j.entity;
 
-import java.math.BigDecimal;
-
 import com.neovisionaries.i18n.LanguageCode;
-
 import de.cardmarket4j.entity.enumeration.Condition;
 
+import java.math.BigDecimal;
+
 public interface CardMarketArticle {
-	public int getArticleId();
+	public Integer getArticleId();
 
 	public String getComment();
 
@@ -17,7 +16,7 @@ public interface CardMarketArticle {
 
 	public BigDecimal getPrice();
 
-	public int getProductId();
+	public Integer getProductId();
 
 	public int getQuantity();
 
