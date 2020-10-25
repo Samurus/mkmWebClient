@@ -1,14 +1,7 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import com.google.gson.JsonElement;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Account;
-import de.cardmarket4j.service.AccountService;
-import de.cardmarket4j.service.MarketplaceService;
-import de.cardmarket4j.service.OrderService;
-import de.cardmarket4j.service.StockService;
-import org.javatuples.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

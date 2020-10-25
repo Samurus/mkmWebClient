@@ -25,17 +25,17 @@ public class ArticleEntity extends BaseEntity {
         private LanguageCode languageCode;
         private String comment;
         private BigDecimal price;
-        private int quantity;
+        private int quantity; //count
         private boolean inShoppingCart;
         //	private Product product;
 //	private User seller;
         private String seller; //TODO User-Datenbank erstellen
-        //	private LocalDateTime lastEdited;
+        //	private LocalDateTime lastEdited; //"2020-10-12T16:41:37+0200"
         private Condition condition;
         private boolean foil;
         private boolean signed;
         private boolean altered;
         private boolean playset;
-        private boolean firstEdition;
+        private boolean firstEdition; //only Yu-Gi-Oh! https://api.cardmarket.com/ws/documentation/API_2.0:Stock
 
 }
