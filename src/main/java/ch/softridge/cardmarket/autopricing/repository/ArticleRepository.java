@@ -1,5 +1,6 @@
 package ch.softridge.cardmarket.autopricing.repository;
 
+import ch.softridge.cardmarket.autopricing.repository.model.ArticleEntity;
 import ch.softridge.cardmarket.autopricing.service.model.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * @Date 03.07.20
  */
 @Repository
-public interface CardRepository extends JpaRepository<Card, Long> {
+public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 }

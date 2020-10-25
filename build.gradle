@@ -27,8 +27,12 @@ dependencies {
     // Dev Tools
     compileOnly 'org.projectlombok:lombok:1.18.14'
     annotationProcessor 'org.projectlombok:lombok:1.18.14'
+    implementation "org.mapstruct:mapstruct:1.4.1.Final"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.4.1.Final"
+
     testCompileOnly 'org.projectlombok:lombok:1.18.14'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.14'
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.4.1.Final"
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     //Formats
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.11.1'

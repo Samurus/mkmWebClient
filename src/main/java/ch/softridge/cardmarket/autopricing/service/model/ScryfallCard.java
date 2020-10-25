@@ -1,4 +1,4 @@
-package ch.softridge.cardmarket.autopricing.model;
+package ch.softridge.cardmarket.autopricing.service.model;
 
 import lombok.Getter;
 import lombok.Setter;

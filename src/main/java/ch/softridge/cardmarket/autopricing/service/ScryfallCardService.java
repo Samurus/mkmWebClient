@@ -1,6 +1,6 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import ch.softridge.cardmarket.autopricing.model.ScryfallCard;
+import ch.softridge.cardmarket.autopricing.service.model.ScryfallCard;
 import ch.softridge.cardmarket.autopricing.repository.ScryfallCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

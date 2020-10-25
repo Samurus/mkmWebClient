@@ -1,21 +1,24 @@
-package ch.softridge.cardmarket.autopricing.model;
+package ch.softridge.cardmarket.autopricing.service.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Kevin Zellweger
- * @Date 04.07.20
+ * @Date 30.07.20
  */
-public enum Rarity {
-    COMMON("common"),
-    UNCOMMON("uncommon"),
-    RARE("rare"),
-    MYTHIC("mythicrare");
+public enum Condition {
+    MINT("M"),
+    NEARMINT("NM"),
+    EXCELLENT("EX"),
+    GOOD("GD"),
+    LIGHTPLAYED("LP"),
+    PLAYED("PL"),
+    POOR("");
 
     private final String sorter;
 
-    Rarity(String sorter) {
+    Condition(String sorter) {
         this.sorter = sorter;
     }
 
@@ -26,19 +29,19 @@ public enum Rarity {
     //****** Reverse Lookup Implementation************//
 
     //Lookup table
-    private static final Map<String, Rarity> lookup = new HashMap<>();
+    private static final Map<String, Condition> lookup = new HashMap<>();
 
     //Populate the lookup table on loading time
     static
     {
-        for(Rarity env : Rarity.values())
+        for(Condition env : Condition.values())
         {
             lookup.put(env.getSorter(), env);
         }
     }
 
     //This method can be used for reverse lookup purpose
-    public static Rarity get(String sorter)
+    public static Condition get(String sorter)
     {
         return lookup.get(sorter);
     }

@@ -1,6 +1,6 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import ch.softridge.cardmarket.autopricing.model.MkmCard;
+import ch.softridge.cardmarket.autopricing.service.model.MkmCard;
 import ch.softridge.cardmarket.autopricing.repository.MkmCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
