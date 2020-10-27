@@ -1,21 +1,21 @@
 package de.cardmarket4j.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.gson.JsonElement;
-
 import de.cardmarket4j.AbstractService;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Article;
+import de.cardmarket4j.entity.Expansion;
 import de.cardmarket4j.entity.Product;
 import de.cardmarket4j.entity.enumeration.HTTPMethod;
 import de.cardmarket4j.entity.util.ArticleFilter;
 import de.cardmarket4j.entity.util.ProductFilter;
 import de.cardmarket4j.util.JsonIO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * MarketplaceService provides a connection to several marketplace related
@@ -102,4 +102,24 @@ public class MarketplaceService extends AbstractService {
 		JsonElement response = request("products/" + productId, HTTPMethod.GET);
 		return JsonIO.getGson().fromJson(response.getAsJsonObject().get("product"), Product.class);
 	}
+
+	public Set<Expansion> getExpansions(ProductFilter productFilter) throws IOException {
+		Set<Expansion> setProducts = new HashSet<>();
+		JsonElement response = request("games/1/expansions", HTTPMethod.GET);
+		for (JsonElement jEle : response.getAsJsonObject().get("expansion").getAsJsonArray()) {
+			setProducts.add(JsonIO.getGson().fromJson(jEle, Expansion.class));
+		}
+		return setProducts;
+	}
+
+	//nicht Nötig, da expansion Id im Productfile angegeben ist.
+//	public Set<Product> getProductsOfExpansion(Integer idExpansion) throws IOException {
+//		Set<Product> setProducts = new HashSet<>();
+//		JsonElement response = request("expansions/"+idExpansion+"/singles", HTTPMethod.GET);
+//		for (JsonElement jEle : response.getAsJsonObject().get("single").getAsJsonArray()) {
+//			setProducts.add(JsonIO.getGson().fromJson(jEle, Product.class));
+//		}
+//		return setProducts;
+//	}
+
 }
