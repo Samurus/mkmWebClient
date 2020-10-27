@@ -2,7 +2,9 @@ package ch.softridge.cardmarket.autopricing.controller.endpoint;
 
 import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
 import ch.softridge.cardmarket.autopricing.repository.model.ArticleEntity;
+import ch.softridge.cardmarket.autopricing.repository.model.ProductEntity;
 import ch.softridge.cardmarket.autopricing.service.ArticleService;
+import ch.softridge.cardmarket.autopricing.service.ProductService;
 import ch.softridge.cardmarket.autopricing.service.mapper.ArticleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -27,6 +29,9 @@ public class ArticleEndpoint {
     private ArticleService articleService;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private ArticleMapper articleMapper;
 
     @GetMapping("/stock/reload")
@@ -47,4 +52,10 @@ public class ArticleEndpoint {
             List<ArticleEntity> articles = articleService.findAll();
             return articles.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
     }
+
+    @GetMapping("/products")
+    public List<ProductEntity> persistProductFile() throws IOException {
+        return productService.persistProductFile();
+    }
+
 }
