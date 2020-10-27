@@ -38,4 +38,6 @@ public class ArticleEntity extends BaseEntity {
         private boolean playset;
         private boolean firstEdition; //only Yu-Gi-Oh! https://api.cardmarket.com/ws/documentation/API_2.0:Stock
 
+        private ArticlePrice articlePrice;
+
 }

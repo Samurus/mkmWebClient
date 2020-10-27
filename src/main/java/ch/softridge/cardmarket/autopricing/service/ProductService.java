@@ -1,11 +1,15 @@
 package ch.softridge.cardmarket.autopricing.service;
 
+import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
 import ch.softridge.cardmarket.autopricing.repository.ArticleRepository;
 import ch.softridge.cardmarket.autopricing.repository.ExpansionRepository;
+import ch.softridge.cardmarket.autopricing.repository.PriceRepository;
 import ch.softridge.cardmarket.autopricing.repository.ProductRepository;
 import ch.softridge.cardmarket.autopricing.repository.model.ArticleEntity;
+import ch.softridge.cardmarket.autopricing.repository.model.ArticlePrice;
 import ch.softridge.cardmarket.autopricing.repository.model.ExpansionEntity;
 import ch.softridge.cardmarket.autopricing.repository.model.ProductEntity;
+import ch.softridge.cardmarket.autopricing.service.mapper.ArticleMapper;
 import ch.softridge.cardmarket.autopricing.service.mapper.ExpansionMapper;
 import ch.softridge.cardmarket.autopricing.service.util.FileImport;
 import de.cardmarket4j.entity.Expansion;
@@ -19,8 +23,7 @@ import javax.transaction.Transactional;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +37,12 @@ public class ProductService {
 
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    ArticleMapper articleMapper;
+
+    @Autowired
+    private PriceRepository priceRepository;
 
     @Autowired
     private MkmService mkmService;
@@ -63,19 +72,27 @@ public class ProductService {
         return expansionRepository.saveAll(entities);
     }
 
-    public List<ProductEntity> findProductsByExpansionId(Integer expansionId) throws IOException {
-        return productRepository.findAllByExpansionId(expansionId);
-    }
-
-
-    public List<ExpansionEntity> findExpansionsByName(String expansionName){
+    public List<ExpansionEntity> findExpansionsByName(String expansionName) {
         return expansionRepository.findAllByNameContaining(expansionName);
     }
 
-    public List<ArticleEntity> findArticleByExpansionId(Integer expansionId) throws IOException {
-        List<ProductEntity> productsByExpansionId = findProductsByExpansionId(expansionId);
+    public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(Integer expansionId) throws IOException {
+        List<ProductEntity> productsByExpansionId = productRepository.findAllByExpansionId(expansionId);
         List<Integer> productIds = productsByExpansionId.stream().map(ProductEntity::getProductId).collect(Collectors.toList());
-        return articleRepository.findByProductIds(productIds);
+        List<ArticleEntity> byProductIds = articleRepository.findByProductIds(productIds);
+
+        List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
+
+        List<ArticleDto> allArticlesWithCheapestPriceByExpansion = new ArrayList<>();
+        articleDtos.forEach(articleEntity -> {
+            List<ArticlePrice> byArticleId = priceRepository.findByArticleId(articleEntity.getArticleId());
+            ArticlePrice cheapestPrice = byArticleId.stream().min(Comparator.comparing(ArticlePrice::getPrice)).orElseThrow(NoSuchElementException::new);
+            articleEntity.setArticlePrice(cheapestPrice);
+            articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
+            allArticlesWithCheapestPriceByExpansion.add(articleEntity);
+        });
+
+        return allArticlesWithCheapestPriceByExpansion;
     }
 
 }

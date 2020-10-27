@@ -14,4 +14,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     @Query( "select o from ArticleEntity o where productId in :productIdList" )
     List<ArticleEntity> findByProductIds(@Param("productIdList") List<Integer> productIdList);
 
+    @Query( "select o from ArticleEntity o where articleId in :articleIds" )
+    List<ArticleEntity> findByArticleIds(@Param("articleIds") List<Integer> articleIds);
+
 }

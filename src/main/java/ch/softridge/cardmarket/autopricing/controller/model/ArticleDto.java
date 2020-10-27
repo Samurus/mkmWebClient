@@ -1,5 +1,6 @@
 package ch.softridge.cardmarket.autopricing.controller.model;
 
+import ch.softridge.cardmarket.autopricing.repository.model.ArticlePrice;
 import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.entity.enumeration.Condition;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
 import java.math.BigDecimal;
 
 @Setter
@@ -32,5 +32,7 @@ public class ArticleDto {
         private boolean altered;
         private boolean playset;
         private boolean firstEdition;
+
+        private ArticlePrice articlePrice;
 
 }
