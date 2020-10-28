@@ -1,12 +1,12 @@
 package ch.softridge.cardmarket.autopricing.controller.endpoint;
 
 import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
-import ch.softridge.cardmarket.autopricing.repository.model.ArticleEntity;
-import ch.softridge.cardmarket.autopricing.repository.model.ExpansionEntity;
-import ch.softridge.cardmarket.autopricing.service.ArticleService;
-import ch.softridge.cardmarket.autopricing.service.PriceService;
-import ch.softridge.cardmarket.autopricing.service.ProductService;
-import ch.softridge.cardmarket.autopricing.service.mapper.ArticleMapper;
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
+import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
+import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
+import ch.softridge.cardmarket.autopricing.domain.service.PriceService;
+import ch.softridge.cardmarket.autopricing.domain.service.ProductService;
+import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

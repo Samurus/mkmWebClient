@@ -1,9 +1,12 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import ch.softridge.cardmarket.autopricing.service.model.Card;
-import ch.softridge.cardmarket.autopricing.service.model.MkmCard;
-import ch.softridge.cardmarket.autopricing.service.model.Rarity;
-import ch.softridge.cardmarket.autopricing.service.model.ScryfallCard;
+import ch.softridge.cardmarket.autopricing.domain.service.CardService;
+import ch.softridge.cardmarket.autopricing.domain.service.MkmCardService;
+import ch.softridge.cardmarket.autopricing.domain.service.ScryfallCardService;
+import ch.softridge.cardmarket.autopricing.domain.model.Card;
+import ch.softridge.cardmarket.autopricing.domain.model.MkmCard;
+import ch.softridge.cardmarket.autopricing.domain.model.Rarity;
+import ch.softridge.cardmarket.autopricing.domain.model.ScryfallCard;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,7 @@
 package ch.softridge.cardmarket.autopricing.service.util;
 
-import ch.softridge.cardmarket.autopricing.repository.model.ProductEntity;
+import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
+import ch.softridge.cardmarket.autopricing.util.FileImport;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;

@@ -1,6 +1,7 @@
 package ch.softridge.cardmarket.autopricing.service;
 
 import ch.softridge.cardmarket.autopricing.config.Config;
+import ch.softridge.cardmarket.autopricing.domain.service.MkmService;
 import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Account;
