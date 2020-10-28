@@ -34,7 +34,8 @@ public class ArticleEntity extends BaseEntity {
     private ArticlePriceEntity articlePrice;
     private int quantity; //count
     private boolean inShoppingCart;
-    @ManyToOne
+    @ManyToOne()
+    @JoinColumn(name = "mkm_user_id")
     private MkmUserEntity seller;
     private LocalDateTime lastEdited; //"2020-10-12T16:41:37+0200"
     private Condition condition;

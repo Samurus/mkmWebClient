@@ -19,5 +19,20 @@
       "name": "mkm.accessTokenSecret",
       "type": "java.lang.String",
       "description": "Access Key for mkm API."
+    },
+    {
+      "name": "pricer.uri",
+      "type": "java.lang.String",
+      "description": "URI to Pricer Mikro Service."
+    },
+    {
+      "name": "pricer.user",
+      "type": "java.lang.String",
+      "description": "User Registerd in Pricer Mikroservice."
+    },
+    {
+      "name": "pricer.password",
+      "type": "java.lang.String",
+      "description": "Password for Pricer Mikroservice."
     }
   ] }

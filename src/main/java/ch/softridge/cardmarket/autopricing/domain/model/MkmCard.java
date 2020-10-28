@@ -26,9 +26,8 @@ public class MkmCard {
     @OneToOne(mappedBy = "mkmCard")
     private Card card;
 
-    @OneToMany(mappedBy = "mkmCard",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY)
+    @OneToMany()
+    @JoinColumn(name = "mkmcard_id")
     private Set<LocalizationEntity> localizations;
 
     public MkmCard(long idProduct, long idMetaproduct, int countReprints, String enName, Card card) {

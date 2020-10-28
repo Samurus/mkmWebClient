@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -20,9 +21,11 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "expansion")
 public class ExpansionEntity extends BaseEntity {
-    @OneToMany
+    @OneToMany()
+    @JoinColumn(name = "localization_id")
     Set<LocalizationEntity> localizations;
-    private int expansionId;
+
+    private Integer expansionId;
     private String name;
     private String code;
     private Integer iconCode;
