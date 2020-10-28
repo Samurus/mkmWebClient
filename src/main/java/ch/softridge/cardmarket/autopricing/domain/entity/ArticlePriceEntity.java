@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ArticlePrice extends BaseEntity  {
+public class ArticlePriceEntity extends BaseEntity  {
     private Integer articleId;
     private BigDecimal recommendedPrice;
     private BigDecimal price;

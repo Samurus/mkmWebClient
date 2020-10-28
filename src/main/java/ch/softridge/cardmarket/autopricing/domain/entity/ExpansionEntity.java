@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 
 @Setter
@@ -16,16 +18,15 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="expansion")
+@Table(name = "expansion")
 public class ExpansionEntity extends BaseEntity {
-
-        private int expansionId;
-        private String name;
-//        private Map<LanguageCode, String> mapLocalizedNames;
-        String mapLocalizedNames;
-        private String code;
-        private Integer iconCode;
-        private LocalDateTime releaseDate;
-        private Game game;
+    @OneToMany
+    Set<LocalizationEntity> localizations;
+    private int expansionId;
+    private String name;
+    private String code;
+    private Integer iconCode;
+    private LocalDateTime releaseDate;
+    private Game game;
 
 }

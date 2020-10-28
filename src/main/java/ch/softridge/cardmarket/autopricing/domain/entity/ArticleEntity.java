@@ -7,9 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.math.BigDecimal;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Setter
@@ -17,27 +16,32 @@ import java.math.BigDecimal;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="article")
+@Table(name = "article")
 public class ArticleEntity extends BaseEntity {
 
-        private int articleId;
-        private Integer productId;
-        private LanguageCode languageCode;
-        private String comment;
-        private BigDecimal price;
-        private int quantity; //count
-        private boolean inShoppingCart;
-        //	private Product product;
-//	private User seller;
-        private String seller; //TODO User-Datenbank erstellen
-        //	private LocalDateTime lastEdited; //"2020-10-12T16:41:37+0200"
-        private Condition condition;
-        private boolean foil;
-        private boolean signed;
-        private boolean altered;
-        private boolean playset;
-        private boolean firstEdition; //only Yu-Gi-Oh! https://api.cardmarket.com/ws/documentation/API_2.0:Stock
+    private int articleId;
+    //private Integer productId;
+    //can be represented within the ProductEntity and is redundant
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
 
-        private ArticlePrice articlePrice;
+    private LanguageCode languageCode;
+    private String comment;
+    //private BigDecimal price;
+    //price is represented by articlePriceEntity
+    @OneToOne(optional = false)
+    private ArticlePriceEntity articlePrice;
+    private int quantity; //count
+    private boolean inShoppingCart;
+    @ManyToOne
+    private MkmUserEntity seller;
+    private LocalDateTime lastEdited; //"2020-10-12T16:41:37+0200"
+    private Condition condition;
+    private boolean foil;
+    private boolean signed;
+    private boolean altered;
+    private boolean playset;
+    private boolean firstEdition; //only Yu-Gi-Oh! https://api.cardmarket.com/ws/documentation/API_2.0:Stock
 
 }

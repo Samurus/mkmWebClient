@@ -1,8 +1,8 @@
 package ch.softridge.cardmarket.autopricing.controller.endpoint;
 
-import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
-import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePrice;
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
@@ -39,7 +39,7 @@ public class ReloadEndpoint {
 
 
     @GetMapping("/prices/{name}")
-    public List<ArticlePrice> reloadPricesRecommendations(@PathVariable("name") String name) throws IOException {
+    public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name) throws IOException {
         return priceService.reloadPricesRecommendations(name);
     }
 

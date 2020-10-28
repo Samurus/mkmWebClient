@@ -1,6 +1,6 @@
 package ch.softridge.cardmarket.autopricing.controller.endpoint;
 
-import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;

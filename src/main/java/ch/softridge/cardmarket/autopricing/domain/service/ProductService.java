@@ -1,12 +1,12 @@
 package ch.softridge.cardmarket.autopricing.domain.service;
 
-import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.repository.ArticleRepository;
 import ch.softridge.cardmarket.autopricing.domain.repository.ExpansionRepository;
 import ch.softridge.cardmarket.autopricing.domain.repository.PriceRepository;
 import ch.softridge.cardmarket.autopricing.domain.repository.ProductRepository;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
-import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePrice;
 import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
@@ -85,9 +85,9 @@ public class ProductService {
 
         List<ArticleDto> allArticlesWithCheapestPriceByExpansion = new ArrayList<>();
         articleDtos.forEach(articleEntity -> {
-            List<ArticlePrice> byArticleId = priceRepository.findByArticleId(articleEntity.getArticleId());
-            ArticlePrice cheapestPrice = byArticleId.stream().min(Comparator.comparing(ArticlePrice::getPrice)).orElseThrow(NoSuchElementException::new);
-            articleEntity.setArticlePrice(cheapestPrice);
+            List<ArticlePriceEntity> byArticleId = priceRepository.findByArticleId(articleEntity.getArticleId());
+            ArticlePriceEntity cheapestPrice = byArticleId.stream().min(Comparator.comparing(ArticlePriceEntity::getPrice)).orElseThrow(NoSuchElementException::new);
+            articleEntity.setArticlePriceEntity(cheapestPrice);
             articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
             allArticlesWithCheapestPriceByExpansion.add(articleEntity);
         });

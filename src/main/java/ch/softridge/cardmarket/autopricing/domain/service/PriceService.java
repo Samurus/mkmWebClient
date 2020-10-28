@@ -1,7 +1,7 @@
 package ch.softridge.cardmarket.autopricing.domain.service;
 
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.repository.PriceRepository;
-import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePrice;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,18 +38,18 @@ public class PriceService {
     private String pricerPassword;
 
 
-    public List<ArticlePrice> findAll() {
+    public List<ArticlePriceEntity> findAll() {
         return priceRepository.findAll();
     }
 
-    public List<ArticlePrice> reloadPricesRecommendations(String name) throws IOException {
+    public List<ArticlePriceEntity> reloadPricesRecommendations(String name) throws IOException {
         //TODO with user form accountinfo
         //String userName = mkmService.getAccount().getUserName();
         priceRepository.deleteAll();
-        ResponseEntity<List<ArticlePrice>> prices = new RestTemplate().exchange
+        ResponseEntity<List<ArticlePriceEntity>> prices = new RestTemplate().exchange
                 (pricerUri + name + "/min-price", HttpMethod.GET,
-                        new HttpEntity<ArticlePrice>(createHeaders(pricerUserName, pricerPassword)),
-                        new ParameterizedTypeReference<List<ArticlePrice>>() {});
+                        new HttpEntity<ArticlePriceEntity>(createHeaders(pricerUserName, pricerPassword)),
+                        new ParameterizedTypeReference<List<ArticlePriceEntity>>() {});
         return priceRepository.saveAll(prices.getBody());
     }
 

@@ -1,5 +1,6 @@
 package ch.softridge.cardmarket.autopricing.domain.model;
 
+import ch.softridge.cardmarket.autopricing.domain.entity.LocalizationEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ public class MkmCard {
     @OneToMany(mappedBy = "mkmCard",
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY)
-    private Set<Localization> localizations;
+    private Set<LocalizationEntity> localizations;
 
     public MkmCard(long idProduct, long idMetaproduct, int countReprints, String enName, Card card) {
         this.idProduct = idProduct;

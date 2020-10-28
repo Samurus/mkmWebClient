@@ -1,10 +1,10 @@
 package ch.softridge.cardmarket.autopricing.domain.service;
 
-import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.repository.ArticleRepository;
 import ch.softridge.cardmarket.autopricing.domain.repository.PriceRepository;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
-import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePrice;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import de.cardmarket4j.entity.Article;
 import de.cardmarket4j.entity.CardMarketArticle;
@@ -44,7 +44,7 @@ public class ArticleService {
     public List<ArticleEntity> reloadStockFromMkm() throws IOException {
         articleRepository.deleteAll();
         List<Article> stock = mkmService.getCardMarket().getStockService().getStock();
-        List<ArticleEntity> entities = stock.stream().map(articleMapper::articleToEntity).collect(Collectors.toList());
+        List<ArticleEntity> entities = stock.stream().map(articleMapper::apiArticleToEntity).collect(Collectors.toList());
         return articleRepository.saveAll(entities);
     }
 
@@ -57,7 +57,7 @@ public class ArticleService {
     public List<ArticleEntity> updateAll(List<ArticleDto> articleDtos) throws IOException {
         List<CardMarketArticle> entities = articleDtos.stream().map(articleMapper::dtoToArticle).collect(Collectors.toList());
         List<Article> articles = mkmService.getCardMarket().getStockService().editListArticles(entities);
-        List<ArticleEntity> articleEntities = articles.stream().map(articleMapper::articleToEntity).collect(Collectors.toList());
+        List<ArticleEntity> articleEntities = articles.stream().map(articleMapper::apiArticleToEntity).collect(Collectors.toList());
 
         List<Integer> collect = articleEntities.stream().map(ArticleEntity::getArticleId).collect(Collectors.toList());
         List<ArticleEntity> byArticleIds = articleRepository.findByArticleIds(collect);
@@ -69,13 +69,13 @@ public class ArticleService {
         //TODO optimization with Databasequeries or Entities with oneToMany
         List<ArticleEntity> articles = articleRepository.findAll();
         List<ArticleDto> articleDtos = articles.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
-        List<ArticlePrice> byArticleId = priceRepository.findAll();
-        Map<Integer, List<ArticlePrice>> prices = byArticleId.stream().collect(Collectors.groupingBy(ArticlePrice::getArticleId));
+        List<ArticlePriceEntity> byArticleId = priceRepository.findAll();
+        Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream().collect(Collectors.groupingBy(ArticlePriceEntity::getArticleId));
 
         List<ArticleDto> allWithPrices = new ArrayList<>();
         articleDtos.forEach(articleEntity -> {
-            ArticlePrice cheapestPrice = prices.get(articleEntity.getArticleId()).stream().min(Comparator.comparing(ArticlePrice::getPrice)).orElseThrow(NoSuchElementException::new);
-            articleEntity.setArticlePrice(cheapestPrice);
+            ArticlePriceEntity cheapestPrice = prices.get(articleEntity.getArticleId()).stream().min(Comparator.comparing(ArticlePriceEntity::getPrice)).orElseThrow(NoSuchElementException::new);
+            articleEntity.setArticlePriceEntity(cheapestPrice);
             articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
             allWithPrices.add(articleEntity);
         });
