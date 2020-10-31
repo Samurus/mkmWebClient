@@ -54,6 +54,10 @@ public class FileImport {
                                 .get("productsfile").toString()));
     }
 
+    public static byte[] decompressBase64(InputStream inputStream) throws IOException{
+        return decompress(Base64.decodeBase64(readFromInputStream(inputStream)));
+    }
+
     public static List<ProductEntity> readSorterProductCSV(String fileName) throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileName))) {
             return reader.lines()
