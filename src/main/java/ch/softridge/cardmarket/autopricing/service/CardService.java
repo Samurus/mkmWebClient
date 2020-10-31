@@ -1,6 +1,6 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import ch.softridge.cardmarket.autopricing.model.Card;
+import ch.softridge.cardmarket.autopricing.service.model.Card;
 import ch.softridge.cardmarket.autopricing.repository.CardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

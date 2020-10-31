@@ -1,8 +1,8 @@
 package ch.softridge.cardmarket.autopricing.controller;
 
 
-import ch.softridge.cardmarket.autopricing.model.Card;
-import ch.softridge.cardmarket.autopricing.model.Rarity;
+import ch.softridge.cardmarket.autopricing.service.model.Card;
+import ch.softridge.cardmarket.autopricing.service.model.Rarity;
 import ch.softridge.cardmarket.autopricing.service.CardService;
 import ch.softridge.cardmarket.autopricing.service.MkmService;
 import org.springframework.beans.factory.annotation.Autowired;

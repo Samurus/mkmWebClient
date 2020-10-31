@@ -2,6 +2,7 @@ package de.cardmarket4j.entity;
 
 import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.entity.enumeration.Condition;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * @author QUE
  * @see https://www.mkmapi.eu/ws/documentation/API_2.0:Entities:Article
  */
+@NoArgsConstructor //für Mapstruct
 public class Article implements CardMarketArticle {
     private Integer articleId;
     private Integer productId;
