@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ExpansionRepository extends JpaRepository<ExpansionEntity, Long> {
     List<ExpansionEntity> findAllByNameContaining(String name);
+    ExpansionEntity getByExpansionId(Integer expansionId);
 }

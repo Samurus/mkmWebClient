@@ -6,6 +6,7 @@ import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
+import ch.softridge.cardmarket.autopricing.domain.service.ExpansionServie;
 import ch.softridge.cardmarket.autopricing.domain.service.PriceService;
 import ch.softridge.cardmarket.autopricing.domain.service.ProductService;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
@@ -37,6 +38,9 @@ public class ReloadEndpoint {
     @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
+    private ExpansionServie expansionService;
+
 
     @GetMapping("/prices/{name}")
     public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name) throws IOException {
@@ -65,6 +69,6 @@ public class ReloadEndpoint {
 
     @GetMapping("/expansions")
     public List<ExpansionEntity> reloadExpansions() throws IOException {
-        return productService.persistExpansions();
+        return expansionService.persistExpansions();
     }
 }

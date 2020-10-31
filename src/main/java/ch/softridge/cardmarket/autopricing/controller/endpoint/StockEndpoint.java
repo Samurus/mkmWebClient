@@ -4,6 +4,7 @@ import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
+import ch.softridge.cardmarket.autopricing.domain.service.ExpansionServie;
 import ch.softridge.cardmarket.autopricing.domain.service.PriceService;
 import ch.softridge.cardmarket.autopricing.domain.service.ProductService;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
@@ -34,6 +35,9 @@ public class StockEndpoint {
     @Autowired
     private PriceService priceService;
 
+    @Autowired
+    private ExpansionServie expansionService;
+
     @GetMapping("/articles")
     public List<ArticleDto> loadMyStock(){
         List<ArticleEntity> articles = articleService.findAll();
@@ -52,7 +56,7 @@ public class StockEndpoint {
 
     @GetMapping("/expansion/{name}")
     public List<ExpansionEntity> findExpansionsByName(@PathVariable("name") String name) throws IOException {
-        return productService.findExpansionsByName(name);
+        return expansionService.findAllByNameContaining(name);
     }
 
     @GetMapping("/articles/expansion/{id}")
