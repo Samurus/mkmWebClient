@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
  * @Date 04.07.20
  */
 @Repository
-public interface ScryfallCardRepository extends JpaRepository<ScryfallCard,Long> {
+public interface ScryfallCardRepository extends JpaRepository<ScryfallCard, Long> {
+
 }

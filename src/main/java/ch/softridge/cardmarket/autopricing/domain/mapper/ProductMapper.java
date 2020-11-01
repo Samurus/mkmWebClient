@@ -11,14 +11,15 @@ import org.mapstruct.Mapping;
  * @author Kevin Zellweger
  * @Date 28.10.20
  */
-@Mapper(componentModel = "spring", uses = {LocalizationMapper.class, ExpansionMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", uses = {LocalizationMapper.class,
+    ExpansionMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ProductMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "version", ignore = true)
-    @Mapping(target = "listReprintProductIds", ignore = true)
-    abstract ProductEntity apiProductToEntity(Product product);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "version", ignore = true)
+  @Mapping(target = "listReprintProductIds", ignore = true)
+  abstract ProductEntity apiProductToEntity(Product product);
 
-    abstract ProductDto productToProductDto(Product product);
+  abstract ProductDto productToProductDto(Product product);
 
 }

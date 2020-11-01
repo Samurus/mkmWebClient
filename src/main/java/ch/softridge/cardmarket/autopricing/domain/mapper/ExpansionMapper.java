@@ -7,7 +7,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = LocalizationMapper.class)
 public interface ExpansionMapper {
-    @Mapping(target = "version", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    ExpansionEntity toEntity(Expansion article);
+
+  @Mapping(target = "version", ignore = true)
+  @Mapping(target = "id", ignore = true)
+  ExpansionEntity toEntity(Expansion article);
 }
