@@ -89,7 +89,7 @@ The Core features will be:
 ### Built With
 
 * Backend: Java Spring Boot (See gradle.build for dependency list)
-* Frontend: Serverside with [Thymeleaf](https://www.thymeleaf.org/)
+* Frontend: React App [mkmWebClient-FE](https://github.com/KZellweger/mkmWebClient-FE)
 * Database: Local Postgresql Docker (See [Installation](#installation))
 
 <!-- GETTING STARTED -->
@@ -163,7 +163,6 @@ Project Link: [https://github.com/KZellweger/mkmWebClient](https://github.com/KZ
 
 * [othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 * [FrontBackend](https://frontbackend.com/)
-* [Thymeleaf](https://www.thymeleaf.org/)
 * [Spring Boot](https://start.spring.io/)
 * [attacomsian](https://attacomsian.com/)
 
