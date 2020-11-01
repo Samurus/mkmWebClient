@@ -8,39 +8,36 @@ import java.util.Map;
  * @Date 04.07.20
  */
 public enum Rarity {
-    COMMON("common"),
-    UNCOMMON("uncommon"),
-    RARE("rare"),
-    MYTHIC("mythicrare");
+  COMMON("common"),
+  UNCOMMON("uncommon"),
+  RARE("rare"),
+  MYTHIC("mythicrare");
 
-    private final String sorter;
+  //Lookup table
+  private static final Map<String, Rarity> lookup = new HashMap<>();
 
-    Rarity(String sorter) {
-        this.sorter = sorter;
+  //Populate the lookup table on loading time
+  static {
+    for (Rarity env : Rarity.values()) {
+      lookup.put(env.getSorter(), env);
     }
+  }
 
-    public String getSorter(){
-        return sorter;
-    }
+  private final String sorter;
 
-    //****** Reverse Lookup Implementation************//
+  //****** Reverse Lookup Implementation************//
 
-    //Lookup table
-    private static final Map<String, Rarity> lookup = new HashMap<>();
+  Rarity(String sorter) {
+    this.sorter = sorter;
+  }
 
-    //Populate the lookup table on loading time
-    static
-    {
-        for(Rarity env : Rarity.values())
-        {
-            lookup.put(env.getSorter(), env);
-        }
-    }
+  //This method can be used for reverse lookup purpose
+  public static Rarity get(String sorter) {
+    return lookup.get(sorter);
+  }
 
-    //This method can be used for reverse lookup purpose
-    public static Rarity get(String sorter)
-    {
-        return lookup.get(sorter);
-    }
+  public String getSorter() {
+    return sorter;
+  }
 
 }

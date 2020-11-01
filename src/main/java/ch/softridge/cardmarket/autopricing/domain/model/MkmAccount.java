@@ -1,7 +1,6 @@
 package ch.softridge.cardmarket.autopricing.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 import java.util.Map;
 
@@ -12,19 +11,21 @@ import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MkmAccount implements Serializable {
-    Map<String,Object> account;
 
-    protected MkmAccount(){};
+  Map<String, Object> account;
 
-    public MkmAccount(Map<String, Object> account) {
-        this.account = account;
-    }
+  protected MkmAccount() {
+  }
 
-    public Map<String, Object> getAccount() {
-        return account;
-    }
+  public MkmAccount(Map<String, Object> account) {
+    this.account = account;
+  }
 
-    public void setAccount(Map<String, Object> account) {
-        this.account = account;
-    }
+  public Map<String, Object> getAccount() {
+    return account;
+  }
+
+  public void setAccount(Map<String, Object> account) {
+    this.account = account;
+  }
 }

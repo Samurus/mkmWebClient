@@ -1,12 +1,11 @@
 package ch.softridge.cardmarket.autopricing.domain.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * @author Kevin Zellweger
@@ -19,5 +18,6 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "reprint")
 public class ProductReprintEntity extends BaseEntity {
-    int productId;
+
+  int productId;
 }

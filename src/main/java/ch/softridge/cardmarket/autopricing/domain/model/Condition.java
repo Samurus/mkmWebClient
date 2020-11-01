@@ -8,42 +8,39 @@ import java.util.Map;
  * @Date 30.07.20
  */
 public enum Condition {
-    MINT("M"),
-    NEARMINT("NM"),
-    EXCELLENT("EX"),
-    GOOD("GD"),
-    LIGHTPLAYED("LP"),
-    PLAYED("PL"),
-    POOR("");
+  MINT("M"),
+  NEARMINT("NM"),
+  EXCELLENT("EX"),
+  GOOD("GD"),
+  LIGHTPLAYED("LP"),
+  PLAYED("PL"),
+  POOR("");
 
-    private final String sorter;
+  //Lookup table
+  private static final Map<String, Condition> lookup = new HashMap<>();
 
-    Condition(String sorter) {
-        this.sorter = sorter;
+  //Populate the lookup table on loading time
+  static {
+    for (Condition env : Condition.values()) {
+      lookup.put(env.getSorter(), env);
     }
+  }
 
-    public String getSorter(){
-        return sorter;
-    }
+  private final String sorter;
 
-    //****** Reverse Lookup Implementation************//
+  //****** Reverse Lookup Implementation************//
 
-    //Lookup table
-    private static final Map<String, Condition> lookup = new HashMap<>();
+  Condition(String sorter) {
+    this.sorter = sorter;
+  }
 
-    //Populate the lookup table on loading time
-    static
-    {
-        for(Condition env : Condition.values())
-        {
-            lookup.put(env.getSorter(), env);
-        }
-    }
+  //This method can be used for reverse lookup purpose
+  public static Condition get(String sorter) {
+    return lookup.get(sorter);
+  }
 
-    //This method can be used for reverse lookup purpose
-    public static Condition get(String sorter)
-    {
-        return lookup.get(sorter);
-    }
+  public String getSorter() {
+    return sorter;
+  }
 
 }

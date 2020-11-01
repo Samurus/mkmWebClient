@@ -10,12 +10,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-    private Integer productId;
-    private String name;
-    private Integer categoryId;
-    private String categoryName;
-    private Integer expansionId;
-    private Integer metaCardId;
-    private String dateAdded;
+
+  private Integer productId;
+  private String name;
+  private Integer categoryId;
+  private String categoryName;
+  private Integer expansionId;
+  private Integer metaCardId;
+  private String dateAdded;
 
 }

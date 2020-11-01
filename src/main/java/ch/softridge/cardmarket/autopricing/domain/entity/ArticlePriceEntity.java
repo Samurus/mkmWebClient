@@ -1,24 +1,24 @@
 package ch.softridge.cardmarket.autopricing.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.math.BigDecimal;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @Entity
-@Table(name="article_price")
+@Table(name = "article_price")
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ArticlePriceEntity extends BaseEntity  {
-    private Integer articleId;
-    private BigDecimal recommendedPrice;
-    private BigDecimal price;
+public class ArticlePriceEntity extends BaseEntity {
+
+  private Integer articleId;
+  private BigDecimal recommendedPrice;
+  private BigDecimal price;
 }

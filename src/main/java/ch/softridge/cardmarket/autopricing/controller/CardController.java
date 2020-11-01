@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CardController {
 
-    CardService cardService;
-    @Autowired
-    public CardController(CardService cardService){
-        this.cardService = cardService;
-    }
+  CardService cardService;
 
-    @GetMapping("/cards")
-    public String getCards(Model model){
-        model.addAttribute("cards",cardService.findAll());
-        return "cards";
-    }
+  @Autowired
+  public CardController(CardService cardService) {
+    this.cardService = cardService;
+  }
+
+  @GetMapping("/cards")
+  public String getCards(Model model) {
+    model.addAttribute("cards", cardService.findAll());
+    return "cards";
+  }
 }

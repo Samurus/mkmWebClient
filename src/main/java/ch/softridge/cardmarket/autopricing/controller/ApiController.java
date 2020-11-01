@@ -14,33 +14,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 /**
  * @author Kevin Zellweger
  * @Date 29.06.20
- *
+ * <p>
  * Controller which routes the interaction with the MKM API
- *
  */
 @Controller
 public class ApiController {
-    private MkmService mkmService;
-    private CardService cardService;
 
-    @Autowired
-    public ApiController(MkmService mkmService, CardService cardService){
-        this.mkmService = mkmService;
-        this.cardService = cardService;
-    }
+  private final MkmService mkmService;
+  private final CardService cardService;
 
-    @GetMapping({ "/", "/index" })
-    public String index(Model model)
-    {
-        model.addAttribute("card",new Card("None","None", Rarity.COMMON,1,0.2,0.5));
-        //model.addAttribute("name","John");
-        return "index";
-    }
+  @Autowired
+  public ApiController(MkmService mkmService, CardService cardService) {
+    this.mkmService = mkmService;
+    this.cardService = cardService;
+  }
 
-    @PostMapping("/some")
-    public String save(Card card, Model model) {
-        model.addAttribute("card",card);
-        return "saved";
-    }
+  @GetMapping({"/", "/index"})
+  public String index(Model model) {
+    model.addAttribute("card", new Card("None", "None", Rarity.COMMON, 1, 0.2, 0.5));
+    //model.addAttribute("name","John");
+    return "index";
+  }
+
+  @PostMapping("/some")
+  public String save(Card card, Model model) {
+    model.addAttribute("card", card);
+    return "saved";
+  }
 
 }

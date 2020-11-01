@@ -5,7 +5,7 @@ package ch.softridge.cardmarket.autopricing.domain.model;
  * @Date 03.07.20
  */
 public enum Game {
-    MGT,
-    YUG,
-    POK
+  MGT,
+  YUG,
+  POK
 }

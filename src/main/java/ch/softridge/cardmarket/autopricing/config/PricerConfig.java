@@ -7,32 +7,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "pricer")
 public class PricerConfig {
-    private String uri;
-    private String user;
-    private String password;
 
-    public String getUri() {
-        return uri;
-    }
+  private String uri;
+  private String user;
+  private String password;
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+  public String getUri() {
+    return uri;
+  }
 
-    public String getUser() {
-        return user;
-    }
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+  public String getUser() {
+    return user;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setUser(String user) {
+    this.user = user;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 }
 
