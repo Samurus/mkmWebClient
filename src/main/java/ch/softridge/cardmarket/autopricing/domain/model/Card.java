@@ -7,7 +7,8 @@ import javax.persistence.*;
  * @Date 29.06.20
  */
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"title","set","condition","isFoil","isSigned","isPlayset"})})
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"title","set","condition","is_Foil","is_Signed",
+        "is_Playset"})})
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,19 +22,15 @@ public class Card {
     private Rarity rarity;
     @Column(name = "condition")
     private Condition condition;
-    @Column(name = "isFoil")
+    @Column(name = "is_Foil")
     private boolean isFoil;
-    @Column(name = "isSigned")
+    @Column(name = "is_Signed")
     private boolean isSigned;
-    @Column(name = "isPlayset")
+    @Column(name = "is_Playset")
     private boolean isPlayset;
     private int count;
     private double price;
     private double price_trend;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(unique = true)
-    private MkmCard mkmCard;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(unique = true)
@@ -99,10 +96,6 @@ public class Card {
         return Double.valueOf(price_trend);
     }
 
-    public void setMkmCard(MkmCard mkmCard) {
-        this.mkmCard = mkmCard;
-    }
-
     public void setScryfallCard(ScryfallCard scryfallCard) {
         this.scryfallCard = scryfallCard;
     }
@@ -129,10 +122,6 @@ public class Card {
 
     public double getPrice_trend() {
         return price_trend;
-    }
-
-    public MkmCard getMkmCard() {
-        return mkmCard;
     }
 
     public ScryfallCard getScryfallCard() {

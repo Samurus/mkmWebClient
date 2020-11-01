@@ -62,7 +62,7 @@ public class ReloadEndpoint {
 
     @GetMapping("/products")
     public List<ProductEntity> persistProductFile() throws IOException {
-        return productService.persistProductFile();
+        return productService.loadMkmProductlist();
     }
 
 

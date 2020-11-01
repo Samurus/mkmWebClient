@@ -16,9 +16,10 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "product")
+@Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
 public class ProductEntity extends BaseEntity {
 
+    @Column(name = "product_id")
     private Integer productId;
     private Integer metaproductId;
     private Integer totalReprints;
@@ -40,7 +41,7 @@ public class ProductEntity extends BaseEntity {
     @OneToOne
     private MkmPriceGuide priceGuide;
     @OneToMany
-    @JoinColumn(name = "reprint_productId")
+    @JoinColumn(name = "reprint_product_id")
     private List<ProductReprintEntity> listReprintProductIds;
 
     //todo: delegate to service
