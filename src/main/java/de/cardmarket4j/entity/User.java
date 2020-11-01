@@ -158,8 +158,9 @@ public class User {
     }
     if (vat == null) {
       return other.vat == null;
-    } else
+    } else {
       return vat.equals(other.vat);
+    }
   }
 
   public Address getAddress() {

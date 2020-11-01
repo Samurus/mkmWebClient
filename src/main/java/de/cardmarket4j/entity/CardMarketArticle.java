@@ -2,31 +2,31 @@ package de.cardmarket4j.entity;
 
 import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.entity.enumeration.Condition;
-
 import java.math.BigDecimal;
 
 public interface CardMarketArticle {
-	public Integer getArticleId();
 
-	public String getComment();
+  Integer getArticleId();
 
-	public Condition getCondition();
+  String getComment();
 
-	public LanguageCode getLanguageCode();
+  Condition getCondition();
 
-	public BigDecimal getPrice();
+  LanguageCode getLanguageCode();
 
-	public Integer getProductId();
+  BigDecimal getPrice();
 
-	public int getQuantity();
+  Integer getProductId();
 
-	public boolean isAltered();
+  int getQuantity();
 
-	public boolean isFirstEdition();
+  boolean isAltered();
 
-	public boolean isFoil();
+  boolean isFirstEdition();
 
-	public boolean isPlayset();
+  boolean isFoil();
 
-	public boolean isSigned();
+  boolean isPlayset();
+
+  boolean isSigned();
 }

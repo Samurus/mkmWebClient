@@ -3,7 +3,6 @@ package ch.softridge.cardmarket.autopricing.domain.service;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.repository.PriceRepository;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.transaction.Transactional;

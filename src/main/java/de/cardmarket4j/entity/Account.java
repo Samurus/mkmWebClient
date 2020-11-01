@@ -129,8 +129,9 @@ public class Account extends User {
     }
     if (unpaidAmount == null) {
       return other.unpaidAmount == null;
-    } else
+    } else {
       return unpaidAmount.equals(other.unpaidAmount);
+    }
   }
 
   public int getAmountItemsInShoppingCard() {
