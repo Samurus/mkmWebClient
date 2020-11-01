@@ -3,7 +3,6 @@ package ch.softridge.cardmarket.autopricing.controller.endpoint;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
-import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
@@ -61,8 +60,8 @@ public class ReloadEndpoint {
 
 
   @GetMapping("/products")
-  public List<ProductEntity> persistProductFile() throws IOException {
-    return productService.loadMkmProductlist();
+  public void persistProductFile() throws IOException {
+    productService.loadMkmProductlist();
   }
 
 
