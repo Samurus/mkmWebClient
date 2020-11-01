@@ -60,8 +60,9 @@ public class ProductFilter {
     }
     if (start == null) {
       return other.start == null;
-    } else
+    } else {
       return start.equals(other.start);
+    }
   }
 
   public Game getGame() {

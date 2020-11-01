@@ -218,8 +218,9 @@ public class Order {
     }
     if (trackingNumber == null) {
       return other.trackingNumber == null;
-    } else
+    } else {
       return trackingNumber.equals(other.trackingNumber);
+    }
   }
 
   public int getAmountItems() {

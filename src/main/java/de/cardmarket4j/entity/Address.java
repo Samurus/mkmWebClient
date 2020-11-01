@@ -70,8 +70,9 @@ public class Address {
     }
     if (zip == null) {
       return other.zip == null;
-    } else
+    } else {
       return zip.equals(other.zip);
+    }
   }
 
   public String getCity() {

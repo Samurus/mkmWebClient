@@ -3,6 +3,7 @@ package ch.softridge.cardmarket.autopricing.domain.service;
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.softridge.cardmarket.autopricing.domain.repository.ProductRepository;
+import ch.softridge.cardmarket.autopricing.domain.service.exceptions.EntityNotFoundException;
 import ch.softridge.cardmarket.autopricing.util.CSVUtil;
 import ch.softridge.cardmarket.autopricing.util.FileImport;
 import java.io.BufferedReader;
@@ -35,11 +36,27 @@ public class ProductService {
   @Autowired
   private ExpansionServie expansionService;
 
+  /**
+   * Load all Stored Products by Expansion
+   *
+   * @param expansionId Id of desired Expansion
+   * @return List of found Products
+   */
   public List<ProductEntity> findAllByExpansionId(Integer expansionId) {
     return productRepository.findAllByExpansionId(expansionId);
   }
 
-  public List<ProductEntity> loadMkmProductlist() {
+  public ProductEntity findByProductId(Integer productId) {
+    return productRepository.findByProductId(productId).orElseThrow(
+        () -> new EntityNotFoundException(ProductEntity.class, String.valueOf(productId)));
+  }
+
+  /**
+   * Load all Products from MKM-API. Only Products which have a newer added Date than the ones
+   * already persisted will be stored. Be aware that this function might take some while and only a
+   * minimal Set of information is provided from the MKM-API.
+   */
+  public void loadMkmProductlist() {
     try (BufferedReader reader = new BufferedReader(
         new InputStreamReader(new ByteArrayInputStream(loadMkmProductListAsCSV())))) {
       LocalDate mostRecentDate = getMostRecentDate();
@@ -53,8 +70,6 @@ public class ProductService {
     } catch (IOException e) {
       log.error(e.getMessage());
     }
-
-    return null;
   }
 
   /**
@@ -69,7 +84,6 @@ public class ProductService {
     String encodedFileName = "MkmProductsfile.txt";
     String csvFileName = "MkmProductsfile.csv";
     productRepository.deleteAll();
-    //TODO replace file with rest-request to mkm
 
     InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(encodedFileName);
     byte[] zippedPriceArray = FileImport.decompressBase64(resourceAsStream);
@@ -97,13 +111,11 @@ public class ProductService {
       return FileImport.decompressBase64(inputStream);
     } catch (IOException e) {
       log.error(e.getMessage());
-      //TODO introduce API error handler https://www.toptal.com/java/spring-boot-rest-api-error-handling
       return new byte[0];
     }
   }
 
   private ProductEntity parseProductCSV(List<String> inLine) {
-
     ProductEntity entity = new ProductEntity();
     entity.setProductId(CSVUtil.parseIntegerColumn(inLine.get(0)));
     entity.setName(CSVUtil.parseStringColumn(inLine.get(1)));

@@ -79,8 +79,9 @@ public class Expansion {
     }
     if (releaseDate == null) {
       return other.releaseDate == null;
-    } else
+    } else {
       return releaseDate.equals(other.releaseDate);
+    }
   }
 
   public String getCode() {

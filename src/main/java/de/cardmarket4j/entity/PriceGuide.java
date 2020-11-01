@@ -75,8 +75,9 @@ public class PriceGuide {
     }
     if (trend == null) {
       return other.trend == null;
-    } else
+    } else {
       return trend.equals(other.trend);
+    }
   }
 
   public BigDecimal getAvg() {

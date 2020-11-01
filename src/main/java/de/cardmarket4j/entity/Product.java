@@ -167,8 +167,9 @@ public class Product {
     }
     if (totalReprints == null) {
       return other.totalReprints == null;
-    } else
+    } else {
       return totalReprints.equals(other.totalReprints);
+    }
   }
 
   public Integer getCategoryId() {

@@ -6,8 +6,6 @@ import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
 import ch.softridge.cardmarket.autopricing.domain.service.ExpansionServie;
-import ch.softridge.cardmarket.autopricing.domain.service.PriceService;
-import ch.softridge.cardmarket.autopricing.domain.service.ProductService;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,13 +29,7 @@ public class StockEndpoint {
   private ArticleService articleService;
 
   @Autowired
-  private ProductService productService;
-
-  @Autowired
   private ArticleMapper articleMapper;
-
-  @Autowired
-  private PriceService priceService;
 
   @Autowired
   private ExpansionServie expansionService;
