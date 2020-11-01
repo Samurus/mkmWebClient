@@ -112,6 +112,10 @@ public class MarketplaceService extends AbstractService {
 		return setProducts;
 	}
 
+	public JsonElement getProductsFile() throws IOException{
+	    return legacyRequest("productlist", HTTPMethod.GET);
+    }
+
 	//nicht Nötig, da expansion Id im Productfile angegeben ist.
 //	public Set<Product> getProductsOfExpansion(Integer idExpansion) throws IOException {
 //		Set<Product> setProducts = new HashSet<>();

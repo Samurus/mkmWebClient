@@ -1,6 +1,6 @@
 package ch.softridge.cardmarket.autopricing.controller;
 
-import ch.softridge.cardmarket.autopricing.service.CardService;
+import ch.softridge.cardmarket.autopricing.domain.service.CardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

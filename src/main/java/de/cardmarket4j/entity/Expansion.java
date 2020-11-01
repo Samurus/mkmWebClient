@@ -1,11 +1,10 @@
 package de.cardmarket4j.entity;
 
+import com.neovisionaries.i18n.LanguageCode;
+import de.cardmarket4j.entity.enumeration.Game;
+
 import java.time.LocalDateTime;
 import java.util.Map;
-
-import com.neovisionaries.i18n.LanguageCode;
-
-import de.cardmarket4j.entity.enumeration.Game;
 
 /**
  * @see https://www.mkmapi.eu/ws/documentation/API_2.0:Entities:Expansion
@@ -23,7 +22,7 @@ public class Expansion {
 
 	public Expansion(int expansionId, String name, Map<LanguageCode, String> mapLocalizedNames, String code,
 			Integer iconCode, LocalDateTime releaseDate, Game game) {
-		this.expansionId = expansionId;
+	    this.expansionId = expansionId;
 		this.name = name;
 		this.mapLocalizedNames = mapLocalizedNames;
 		this.code = code;

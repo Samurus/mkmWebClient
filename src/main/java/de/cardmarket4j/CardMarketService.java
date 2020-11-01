@@ -1,5 +1,7 @@
 package de.cardmarket4j;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import de.cardmarket4j.entity.enumeration.HTTPMethod;
@@ -21,7 +23,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class CardMarketService {
 	private static final String URI = "https://api.cardmarket.com/ws/v2.0/output.json/";
+	private static final String URI_LEGACY = "https://api.cardmarket.com/ws/v2.0/";
 	private static final String URI_SANDBOX = "https://sandbox.cardmarket.com/ws/v2.0/output.json/";
+	private static final String URI_SANDBOX_LEGACY = "https://sandbox.cardmarket.com/ws/v2.0/";
 	private static Logger LOGGER = LoggerFactory.getLogger("CardMarketService");
 	private boolean sandBoxMode;
 	private final AuthenticationService authenticationService;
@@ -73,7 +77,57 @@ public class CardMarketService {
 		return sandBoxMode;
 	}
 
-	Pair<Integer, JsonElement> request(String URL, HTTPMethod httpMethod) throws IOException {
+
+    Pair<Integer, JsonElement> legacyRequest(String URL, HTTPMethod httpMethod) throws IOException {
+	    try {
+            String uri = (sandBoxMode ? URI_SANDBOX_LEGACY : URI_LEGACY) + URL.replaceAll("\\s", "%20");
+            HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
+
+            String oAuthSignature = authenticationService.createOAuthSignature(uri, httpMethod);
+            connection.addRequestProperty("Authorization", oAuthSignature);
+            connection.setRequestMethod(httpMethod.toString());
+
+            LOGGER.debug("Request:\t{} {}", httpMethod.toString(), uri);
+            LOGGER.trace("Authorization:\t{}", oAuthSignature);
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            LOGGER.trace("Response Code:\t{}", responseCode);
+            LOGGER.trace("Response Header: {}", HTTPUtils.getResponseHeader(connection));
+            requestCount = connection.getHeaderFieldInt("X-Request-Limit-Count", -1);
+            requestLimit = connection.getHeaderFieldInt("X-Request-Limit-Max", -1);
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(
+                    (responseCode == 200 || responseCode == 206 || responseCode == 204) ? connection.getInputStream()
+                            : connection.getErrorStream()));
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            rd.close();
+
+            String responseString = sb.toString();
+            LOGGER.trace("Response Body:\t{}", responseString);
+            JsonElement jResponse = getJsonElementFromXML(responseString);
+            LOGGER.debug("Response:\t{} {}", responseCode, jResponse);
+            lastResponse = new Pair<>(responseCode, jResponse);
+            return lastResponse;
+        } catch (MalformedURLException | InvalidKeyException | NoSuchAlgorithmException | NullPointerException e) {
+            LOGGER.error("An critical error occured", e);
+            System.exit(-1);
+            throw new IOException(e);
+        }
+    }
+
+    private JsonElement getJsonElementFromXML(String responseString) throws IOException {
+        XmlMapper xmlMapper = new XmlMapper();
+        JsonNode node = xmlMapper.readTree(responseString.getBytes());
+        JsonElement element = JsonParser.parseString(node.toString());
+        return element;
+    }
+
+    Pair<Integer, JsonElement> request(String URL, HTTPMethod httpMethod) throws IOException {
 		try {
 			String uri = (sandBoxMode ? URI_SANDBOX : URI) + URL.replaceAll("\\s", "%20");
 			HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
@@ -165,4 +219,5 @@ public class CardMarketService {
 	public void setSandBoxMode(boolean sandBoxMode) {
 		this.sandBoxMode = sandBoxMode;
 	}
+
 }

@@ -1,14 +1,15 @@
 package ch.softridge.cardmarket.autopricing.controller.endpoint;
 
-import ch.softridge.cardmarket.autopricing.controller.model.ArticleDto;
-import ch.softridge.cardmarket.autopricing.repository.model.ArticleEntity;
-import ch.softridge.cardmarket.autopricing.repository.model.ArticlePrice;
-import ch.softridge.cardmarket.autopricing.repository.model.ExpansionEntity;
-import ch.softridge.cardmarket.autopricing.repository.model.ProductEntity;
-import ch.softridge.cardmarket.autopricing.service.ArticleService;
-import ch.softridge.cardmarket.autopricing.service.PriceService;
-import ch.softridge.cardmarket.autopricing.service.ProductService;
-import ch.softridge.cardmarket.autopricing.service.mapper.ArticleMapper;
+import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
+import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
+import ch.softridge.cardmarket.autopricing.domain.entity.ExpansionEntity;
+import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
+import ch.softridge.cardmarket.autopricing.domain.service.ArticleService;
+import ch.softridge.cardmarket.autopricing.domain.service.ExpansionServie;
+import ch.softridge.cardmarket.autopricing.domain.service.PriceService;
+import ch.softridge.cardmarket.autopricing.domain.service.ProductService;
+import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +38,12 @@ public class ReloadEndpoint {
     @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
+    private ExpansionServie expansionService;
+
 
     @GetMapping("/prices/{name}")
-    public List<ArticlePrice> reloadPricesRecommendations(@PathVariable("name") String name) throws IOException {
+    public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name) throws IOException {
         return priceService.reloadPricesRecommendations(name);
     }
 
@@ -58,13 +62,13 @@ public class ReloadEndpoint {
 
     @GetMapping("/products")
     public List<ProductEntity> persistProductFile() throws IOException {
-        return productService.persistProductFile();
+        return productService.loadMkmProductlist();
     }
 
 
 
     @GetMapping("/expansions")
     public List<ExpansionEntity> reloadExpansions() throws IOException {
-        return productService.persistExpansions();
+        return expansionService.persistExpansions();
     }
 }

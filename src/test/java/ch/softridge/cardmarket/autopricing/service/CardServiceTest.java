@@ -1,6 +1,7 @@
 package ch.softridge.cardmarket.autopricing.service;
 
-import ch.softridge.cardmarket.autopricing.service.model.Card;
+import ch.softridge.cardmarket.autopricing.domain.service.CardService;
+import ch.softridge.cardmarket.autopricing.domain.model.Card;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
