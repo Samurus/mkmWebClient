@@ -9,20 +9,23 @@ import de.cardmarket4j.entity.enumeration.Game;
 import de.cardmarket4j.entity.enumeration.HTTPMethod;
 import de.cardmarket4j.util.CardMarketUtils;
 import de.cardmarket4j.util.JsonIO;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.catalina.connector.Response;
 
 public class StockService extends AbstractService {
+
+	private static final int MAX_RESULTS = 100;
+
 	public StockService(CardMarketService cardMarket) {
 		super(cardMarket);
 	}
 
 	/**
 	 * Decreases the quantity of an article in the users stock.
-	 * 
+	 *
 	 * @see https://api.cardmarket.com/ws/documentation/API_2.0:Stock_Quantity
 	 * @param listArticles
 	 * @return {@code List<Article> listArticles}
@@ -35,7 +38,7 @@ public class StockService extends AbstractService {
 
 	/**
 	 * Decreases the quantity of a given list of articles in the users stock.
-	 * 
+	 *
 	 * @see https://api.cardmarket.com/ws/documentation/API_2.0:Stock_Quantity
 	 * @param listArticles
 	 * @return {@code List<Article> listArticles}
@@ -120,23 +123,39 @@ public class StockService extends AbstractService {
 
 	/**
 	 * Returns the users stock. TODO implement paging for more than 1000 results
-	 * 
+	 *
 	 * @return {@code List<Article> listArticles}
 	 * @throws IOException
 	 * @version 0.7
 	 */
 	public List<Article> getStock() throws IOException {
 		List<Article> listArticle = new ArrayList<>();
-		JsonElement response = request("stock", HTTPMethod.GET);
+		String[] currentAndLastElement;
+		int nextPageNumber = 0;
+		do {
+			LOGGER.trace("downloading stock page: " + nextPageNumber);
+			List<Article> articles = loadNextPageFromStock(nextPageNumber);
+			listArticle.addAll(articles);
+			nextPageNumber++;
+			currentAndLastElement	= super.getContentRange().split("-")[1].split("/");
+		} while (!currentAndLastElement[0].equals(currentAndLastElement[1]) //
+				&& Response.SC_PARTIAL_CONTENT == super.getLastResponse().getValue0());
+		LOGGER.info("Last Page requested is {}", nextPageNumber);
+		return listArticle;
+	}
+
+	private List<Article> loadNextPageFromStock(final int page) throws IOException {
+		List<Article> listArticle = new ArrayList<>();
+		JsonElement response = request("stock/" + (MAX_RESULTS * page + 1), HTTPMethod.GET);
 		for (JsonElement jElement : response.getAsJsonObject().get("article").getAsJsonArray()) {
-			listArticle.add(JsonIO.getGson().fromJson(jElement, Article.class));
+				listArticle.add(JsonIO.getGson().fromJson(jElement, Article.class));
 		}
 		return listArticle;
 	}
 
 	/**
 	 * Increases the quantity of an article in the users stock.
-	 * 
+	 *
 	 * @see https://api.cardmarket.com/ws/documentation/API_2.0:Stock_Quantity
 	 * @param listArticles
 	 * @return {@code List<Article> listArticles}
@@ -149,7 +168,7 @@ public class StockService extends AbstractService {
 
 	/**
 	 * Increases the quantity of a given list of articles in the users stock.
-	 * 
+	 *
 	 * @see https://api.cardmarket.com/ws/documentation/API_2.0:Stock_Quantity
 	 * @param listArticles
 	 * @return {@code List<Article> listArticles}

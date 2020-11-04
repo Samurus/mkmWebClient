@@ -64,6 +64,12 @@ public class ReloadEndpoint {
     productService.loadMkmProductlist();
   }
 
+  @GetMapping("/products/file")
+  @Deprecated
+  public void persistProductFileFromFile() throws IOException {
+    productService.persistProductFile();
+  }
+
 
   @GetMapping("/expansions")
   public List<ExpansionEntity> reloadExpansions() throws IOException {
