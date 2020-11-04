@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class ArticleDeserializer implements JsonDeserializer<Article> {
 
@@ -34,7 +35,8 @@ public class ArticleDeserializer implements JsonDeserializer<Article> {
     } catch (NullPointerException e) {
       // Some API-Calls dont return this (Successfull Deletion of Article - Return)
     }
-    String comment = JsonIO.parseString(jObject, "comments");
+    String comment = Objects.requireNonNull(JsonIO.parseString(jObject, "comments"))
+        .replace("null", "");
     BigDecimal price = JsonIO.parseBigDecimal(jObject, "price");
     int quantity = JsonIO.parseInteger(jObject, "count");
     boolean inShoppingCart = JsonIO.parseBoolean(jObject, "inShoppingCart");

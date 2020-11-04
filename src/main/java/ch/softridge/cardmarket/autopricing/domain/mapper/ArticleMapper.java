@@ -15,7 +15,14 @@ public interface ArticleMapper {
 
   @Mapping(target = "version", ignore = true)
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "articlePrice", ignore = true)
+  @Mapping(target = "product.productId", source = "productId")
+  @Mapping(target = "product.name", source = "product.name")
+  @Mapping(target = "product.imageUrl", source = "product.imageUrl")
+//  @Mapping(target = "product.game", source = "product.game")
+  @Mapping(target = "product.expansionCollectionNumber", source = "product.expansionCollectionNumber")
+  @Mapping(target = "product.rarity", source = "product.rarity")
+  @Mapping(target = "product.expansionName", source = "product.expansionName")
+  @Mapping(target = "product.listReprintProductIds", ignore = true)
   ArticleEntity apiArticleToEntity(Article article);
 
   @Mapping(target = "product.listReprintProductIds", ignore = true)

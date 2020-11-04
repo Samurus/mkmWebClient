@@ -2,10 +2,13 @@ package ch.softridge.cardmarket.autopricing.domain.entity;
 
 import de.cardmarket4j.entity.enumeration.Game;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -23,6 +26,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
 public class ProductEntity extends BaseEntity {
+
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = false)
+  private Collection<ArticleEntity> articleEntities = new ArrayList<>();
 
   @Column(name = "product_id")
   private Integer productId;
