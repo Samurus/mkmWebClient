@@ -40,6 +40,7 @@ public class ReloadEndpoint {
   private ExpansionServie expansionService;
 
 
+  //TODO return DTO
   @GetMapping("/prices/{name}")
   public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name)
       throws IOException {
@@ -71,6 +72,7 @@ public class ReloadEndpoint {
   }
 
 
+  //TODO return DTO
   @GetMapping("/expansions")
   public List<ExpansionEntity> reloadExpansions() throws IOException {
     return expansionService.persistExpansions();

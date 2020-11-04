@@ -1,5 +1,6 @@
 package ch.softridge.cardmarket.autopricing.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.cardmarket4j.entity.enumeration.Game;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import lombok.Setter;
 @Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
 public class ProductEntity extends BaseEntity {
 
+
+  @JsonIgnore
   @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = false)
   private Collection<ArticleEntity> articleEntities = new ArrayList<>();
 

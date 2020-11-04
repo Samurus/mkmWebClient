@@ -41,9 +41,9 @@ public class StockEndpoint {
   }
 
   @PostMapping("/articles")
-  public List<ArticleEntity> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
+  public List<ArticleDto> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
       throws IOException {
-    return articleService.updateAll(articleDtos);
+    return articleService.updateAll(articleDtos).stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
   }
 
   @GetMapping("/articles/min-price")
@@ -51,6 +51,7 @@ public class StockEndpoint {
     return articleService.findAllWithMinPrice();
   }
 
+  //TODO return DTO
   @GetMapping("/expansion/{name}")
   public List<ExpansionEntity> findExpansionsByName(@PathVariable("name") String name)
       throws IOException {

@@ -62,6 +62,10 @@ public class ArticleService {
     List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::apiArticleToEntity)
         .collect(Collectors.toList());
 
+    return updateArticleStock(stockEntities);
+  }
+
+  private List<ArticleEntity> updateArticleStock(List<ArticleEntity> stockEntities) {
     Map<Integer, ProductEntity> existingProducts = productService
         .findByProductIdInList(stockEntities.stream()
             .map(product -> product.getProduct().getProductId())
@@ -86,11 +90,6 @@ public class ArticleService {
   }
 
 
-  public List<ArticleEntity> saveAll(List<ArticleEntity> articleEntities) {
-    return articleRepository.saveAll(articleEntities);
-  }
-
-
   public List<ArticleEntity> updateAll(List<ArticleDto> articleDtos) throws IOException {
     List<CardMarketArticle> entities = articleDtos.stream().map(articleMapper::dtoToArticle)
         .collect(Collectors.toList());
@@ -103,7 +102,7 @@ public class ArticleService {
         .collect(Collectors.toList());
     List<ArticleEntity> byArticleIds = articleRepository.findByArticleIds(collect);
     articleRepository.deleteInBatch(byArticleIds);
-    return articleRepository.saveAll(articleEntities);
+    return updateArticleStock(articleEntities);
   }
 
   public List<ArticleDto> findAllWithMinPrice() {
