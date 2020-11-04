@@ -2,6 +2,7 @@ package ch.softridge.cardmarket.autopricing.domain.service;
 
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
+import ch.softridge.cardmarket.autopricing.domain.mapper.ProductMapper;
 import ch.softridge.cardmarket.autopricing.domain.repository.ProductRepository;
 import ch.softridge.cardmarket.autopricing.domain.service.exceptions.EntityNotFoundException;
 import ch.softridge.cardmarket.autopricing.util.CSVUtil;
@@ -15,6 +16,8 @@ import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
@@ -36,6 +39,13 @@ public class ProductService {
   @Autowired
   private ExpansionServie expansionService;
 
+  @Autowired
+  private ArticleService articleService;
+
+  @Autowired
+  ProductMapper productMapper;
+
+
   /**
    * Load all Stored Products by Expansion
    *
@@ -49,6 +59,10 @@ public class ProductService {
   public ProductEntity findByProductId(Integer productId) {
     return productRepository.findByProductId(productId).orElseThrow(
         () -> new EntityNotFoundException(ProductEntity.class, String.valueOf(productId)));
+  }
+
+  List<ProductEntity> findByProductIdInList(List<Integer> productIds) {
+    return productRepository.findByProductIdInList(productIds);
   }
 
   /**
@@ -66,7 +80,7 @@ public class ProductService {
           .filter(productEntity -> productEntity.getDateAdded().isAfter(mostRecentDate))
           .collect(Collectors.toList());
 
-      productRepository.saveAll(entities);
+      updateAllProducts(entities);
     } catch (IOException e) {
       log.error(e.getMessage());
     }
@@ -83,14 +97,28 @@ public class ProductService {
   public List<ProductEntity> persistProductFile() throws IOException {
     String encodedFileName = "MkmProductsfile.txt";
     String csvFileName = "MkmProductsfile.csv";
-    productRepository.deleteAll();
 
     InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(encodedFileName);
-    byte[] zippedPriceArray = FileImport.decompressBase64(resourceAsStream);
+    byte[] zippedPriceArray = FileImport.getProductsFile(resourceAsStream);
     try (FileOutputStream fos = new FileOutputStream(csvFileName)) {
       fos.write(zippedPriceArray);
     }
     List<ProductEntity> productEntities = FileImport.readSorterProductCSV(csvFileName);
+
+    return updateAllProducts(productEntities);
+  }
+
+  private List<ProductEntity> updateAllProducts(List<ProductEntity> productEntities) {
+    Map<Integer, ProductEntity> existingProducts = productRepository.findAll().stream()
+        .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
+
+    productEntities.forEach(newProduct -> {
+      ProductEntity existingProduct = existingProducts.get(newProduct.getProductId());
+      if (null != existingProduct) {
+        productMapper.updateSecondWithFirst(existingProduct, newProduct);
+      }
+    });
+
     return productRepository.saveAll(productEntities);
   }
 
@@ -130,5 +158,9 @@ public class ProductService {
       log.error(e.getMessage());
     }
     return entity;
+  }
+
+  public ProductEntity saveNewProduct(ProductEntity product) {
+    return productRepository.save(product);
   }
 }

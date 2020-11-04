@@ -1,9 +1,12 @@
 package ch.softridge.cardmarket.autopricing.domain.service;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
+import ch.softridge.cardmarket.autopricing.domain.mapper.ProductMapper;
 import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.repository.ArticleRepository;
 import ch.softridge.cardmarket.autopricing.domain.repository.PriceRepository;
@@ -15,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
@@ -47,13 +51,38 @@ public class ArticleService {
   @Autowired
   private ProductService productService;
 
+  @Autowired
+  private ProductMapper productMapper;
+
 
   public List<ArticleEntity> reloadStockFromMkm() throws IOException {
     articleRepository.deleteAll();
     List<Article> stock = mkmService.getCardMarket().getStockService().getStock();
-    List<ArticleEntity> entities = stock.stream().map(articleMapper::apiArticleToEntity)
+    log.info("Requests used today: " + mkmService.getCardMarket().getRequestCount());
+    List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::apiArticleToEntity)
         .collect(Collectors.toList());
-    return articleRepository.saveAll(entities);
+
+    Map<Integer, ProductEntity> existingProducts = productService
+        .findByProductIdInList(stockEntities.stream()
+            .map(product -> product.getProduct().getProductId())
+            .collect(Collectors.toList())).stream()
+        .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
+
+    stockEntities.forEach(articleEntity -> {
+      ProductEntity existingProduct = existingProducts
+          .get(articleEntity.getProduct().getProductId());
+
+      if (null == existingProduct) {
+        //TODO improvement: first determine all new ones and create in bulk
+        existingProduct = productService.saveNewProduct(articleEntity.getProduct());
+      } else {
+        productMapper.updateSecondWithFirst(articleEntity.getProduct(), existingProduct);
+        existingProduct = productService.saveNewProduct(existingProduct);
+      }
+      existingProducts.put(existingProduct.getProductId(), existingProduct);
+      articleEntity.setProduct(existingProduct);
+    });
+    return articleRepository.saveAll(stockEntities);
   }
 
 
@@ -84,7 +113,7 @@ public class ArticleService {
         .collect(Collectors.toList());
     List<ArticlePriceEntity> byArticleId = priceRepository.findAll();
     Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream()
-        .collect(Collectors.groupingBy(ArticlePriceEntity::getArticleId));
+        .collect(groupingBy(ArticlePriceEntity::getArticleId));
 
     List<ArticleDto> allWithPrices = new ArrayList<>();
     articleDtos.forEach(articleEntity -> {
@@ -126,10 +155,6 @@ public class ArticleService {
 
   public List<ArticleEntity> findAll() {
     return articleRepository.findAll();
-  }
-
-  public void deleteAll() {
-    articleRepository.deleteAll();
   }
 
 }

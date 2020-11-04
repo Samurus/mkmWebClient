@@ -17,4 +17,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
   LocalDate getMostRecentDateAdded();
 
   Optional<ProductEntity> findByProductId(Integer productId);
+
+  @Query(value = "select p from ProductEntity p where product_id in :productIdList")
+  List<ProductEntity> findByProductIdInList(List<Integer> productIdList);
+
+
 }
