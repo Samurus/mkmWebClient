@@ -4,7 +4,6 @@ import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ProductMapper;
 import ch.softridge.cardmarket.autopricing.domain.repository.ProductRepository;
-import ch.softridge.cardmarket.autopricing.domain.service.exceptions.EntityNotFoundException;
 import ch.softridge.cardmarket.autopricing.util.CSVUtil;
 import ch.softridge.cardmarket.autopricing.util.FileImport;
 import java.io.BufferedReader;
@@ -54,11 +53,6 @@ public class ProductService {
    */
   public List<ProductEntity> findAllByExpansionId(Integer expansionId) {
     return productRepository.findAllByExpansionId(expansionId);
-  }
-
-  public ProductEntity findByProductId(Integer productId) {
-    return productRepository.findByProductId(productId).orElseThrow(
-        () -> new EntityNotFoundException(ProductEntity.class, String.valueOf(productId)));
   }
 
   List<ProductEntity> findByProductIdInList(List<Integer> productIds) {
@@ -162,5 +156,9 @@ public class ProductService {
 
   public ProductEntity saveNewProduct(ProductEntity product) {
     return productRepository.save(product);
+  }
+
+  public List<ProductEntity> findAllByExpansionName(String name) {
+    return productRepository.findAllByExpansionNameContaining(name);
   }
 }

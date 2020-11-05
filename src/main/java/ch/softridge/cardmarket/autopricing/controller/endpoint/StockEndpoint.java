@@ -58,10 +58,17 @@ public class StockEndpoint {
     return expansionService.findAllByNameContaining(name);
   }
 
+  //FIXME
   @GetMapping("/articles/expansion/{id}")
   public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(
       @PathVariable("id") Integer id) throws IOException {
     return articleService.findAllArticlesWithCheapestPriceByExpansion(id);
+  }
+
+  @GetMapping("/articles/expansion/name/{name}")
+  public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansionName(
+      @PathVariable("name") String name) throws IOException {
+    return articleService.findAllArticlesWithCheapestPriceByExpansion(name);
   }
 
 }

@@ -127,9 +127,35 @@ public class ArticleService {
     return allWithPrices;
   }
 
+  //FIXME
   public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(Integer expansionId)
       throws IOException {
     List<ProductEntity> productsByExpansionId = productService.findAllByExpansionId(expansionId);
+    List<Integer> productIds = productsByExpansionId.stream().map(ProductEntity::getProductId)
+        .collect(Collectors.toList());
+    List<ArticleEntity> byProductIds = articleRepository.findByProductIds(productIds);
+
+    List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::entityToDto)
+        .collect(Collectors.toList());
+
+    List<ArticleDto> allArticlesWithCheapestPriceByExpansion = new ArrayList<>();
+    articleDtos.forEach(articleEntity -> {
+      List<ArticlePriceEntity> byArticleId = priceRepository
+          .findByArticleId(articleEntity.getArticleId());
+      ArticlePriceEntity cheapestPrice = byArticleId.stream()
+          .min(Comparator.comparing(ArticlePriceEntity::getPrice))
+          .orElseThrow(NoSuchElementException::new);
+      articleEntity.setArticlePriceEntity(cheapestPrice);
+      articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
+      allArticlesWithCheapestPriceByExpansion.add(articleEntity);
+    });
+
+    return allArticlesWithCheapestPriceByExpansion;
+  }
+
+  public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(String name)
+      throws IOException {
+    List<ProductEntity> productsByExpansionId = productService.findAllByExpansionName(name);
     List<Integer> productIds = productsByExpansionId.stream().map(ProductEntity::getProductId)
         .collect(Collectors.toList());
     List<ArticleEntity> byProductIds = articleRepository.findByProductIds(productIds);
