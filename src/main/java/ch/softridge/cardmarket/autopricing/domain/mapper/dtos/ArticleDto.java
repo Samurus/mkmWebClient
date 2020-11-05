@@ -2,7 +2,6 @@ package ch.softridge.cardmarket.autopricing.domain.mapper.dtos;
 
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import com.neovisionaries.i18n.LanguageCode;
-import de.cardmarket4j.entity.Product;
 import de.cardmarket4j.entity.User;
 import de.cardmarket4j.entity.enumeration.Condition;
 import java.math.BigDecimal;
@@ -25,7 +24,7 @@ public class ArticleDto {
   private BigDecimal price;
   private int quantity;
   private boolean inShoppingCart;
-  private Product product;
+  private ProductDto product;
   private User seller;
   private LocalDateTime lastEdited;
   private Condition condition;
