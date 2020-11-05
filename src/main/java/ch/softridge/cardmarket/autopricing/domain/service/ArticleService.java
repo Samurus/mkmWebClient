@@ -59,7 +59,7 @@ public class ArticleService {
     articleRepository.deleteAll();
     List<Article> stock = mkmService.getCardMarket().getStockService().getStock();
     log.info("Requests used today: " + mkmService.getCardMarket().getRequestCount());
-    List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::apiArticleToEntity)
+    List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::mkmToEntity)
         .collect(Collectors.toList());
 
     return updateArticleStock(stockEntities);
@@ -91,11 +91,11 @@ public class ArticleService {
 
 
   public List<ArticleEntity> updateAll(List<ArticleDto> articleDtos) throws IOException {
-    List<CardMarketArticle> entities = articleDtos.stream().map(articleMapper::dtoToArticle)
+    List<CardMarketArticle> entities = articleDtos.stream().map(articleMapper::dtoToMkm)
         .collect(Collectors.toList());
     List<Article> articles = mkmService.getCardMarket().getStockService()
         .editListArticles(entities);
-    List<ArticleEntity> articleEntities = articles.stream().map(articleMapper::apiArticleToEntity)
+    List<ArticleEntity> articleEntities = articles.stream().map(articleMapper::mkmToEntity)
         .collect(Collectors.toList());
 
     List<Integer> collect = articleEntities.stream().map(ArticleEntity::getArticleId)
@@ -108,7 +108,7 @@ public class ArticleService {
   public List<ArticleDto> findAllWithMinPrice() {
     //TODO optimization with Databasequeries or Entities with oneToMany
     List<ArticleEntity> articles = articleRepository.findAll();
-    List<ArticleDto> articleDtos = articles.stream().map(articleMapper::articleEntityToDto)
+    List<ArticleDto> articleDtos = articles.stream().map(articleMapper::entityToDto)
         .collect(Collectors.toList());
     List<ArticlePriceEntity> byArticleId = priceRepository.findAll();
     Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream()
@@ -134,7 +134,7 @@ public class ArticleService {
         .collect(Collectors.toList());
     List<ArticleEntity> byProductIds = articleRepository.findByProductIds(productIds);
 
-    List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::articleEntityToDto)
+    List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::entityToDto)
         .collect(Collectors.toList());
 
     List<ArticleDto> allArticlesWithCheapestPriceByExpansion = new ArrayList<>();

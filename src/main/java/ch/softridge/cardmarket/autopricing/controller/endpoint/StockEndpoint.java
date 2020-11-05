@@ -37,13 +37,13 @@ public class StockEndpoint {
   @GetMapping("/articles")
   public List<ArticleDto> loadMyStock() {
     List<ArticleEntity> articles = articleService.findAll();
-    return articles.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
+    return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
   @PostMapping("/articles")
   public List<ArticleDto> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
       throws IOException {
-    return articleService.updateAll(articleDtos).stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
+    return articleService.updateAll(articleDtos).stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
   @GetMapping("/articles/min-price")

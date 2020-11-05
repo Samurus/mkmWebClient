@@ -26,7 +26,7 @@ public class AccountService {
   public AccountDto getAccount() {
     try {
       Account account = mkmService.getCardMarket().getAccountService().getAccount();
-      AccountDto dto = accountMapper.accountToDto(account);
+      AccountDto dto = accountMapper.mkmToDto(account);
       return dto;
     } catch (IOException e) {
       throw new MkmAPIException(de.cardmarket4j.service.AccountService.class, "getAccount()");

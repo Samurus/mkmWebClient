@@ -10,5 +10,5 @@ public interface ExpansionMapper {
 
   @Mapping(target = "version", ignore = true)
   @Mapping(target = "id", ignore = true)
-  ExpansionEntity toEntity(Expansion article);
+  ExpansionEntity mkmToEntity(Expansion article);
 }

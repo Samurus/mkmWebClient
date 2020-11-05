@@ -40,7 +40,7 @@ public class ExpansionServie {
   public List<ExpansionEntity> persistExpansions() throws IOException {
     Set<Expansion> expansions = mkmService.getCardMarket().getMarketplaceService()
         .getExpansions(new ProductFilter("?"));
-    List<ExpansionEntity> entities = expansions.stream().map(expansionMapper::toEntity)
+    List<ExpansionEntity> entities = expansions.stream().map(expansionMapper::mkmToEntity)
         .collect(Collectors.toList());
     return expansionRepository.saveAll(entities);
   }

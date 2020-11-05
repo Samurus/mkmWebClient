@@ -16,14 +16,13 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
  */
 @Mapper(componentModel = "spring", uses = {LocalizationMapper.class,
     ExpansionMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public abstract interface ProductMapper {
+public interface ProductMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "version", ignore = true)
-  @Mapping(target = "listReprintProductIds", ignore = true)
-  abstract ProductEntity apiProductToEntity(Product product);
+  ProductEntity mkmToEntity(Product product);
 
-  abstract ProductDto productToProductDto(Product product);
+  ProductDto dtoToMkm(Product product);
 
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

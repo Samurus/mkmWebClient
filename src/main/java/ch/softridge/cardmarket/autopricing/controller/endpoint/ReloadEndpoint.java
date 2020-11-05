@@ -51,7 +51,7 @@ public class ReloadEndpoint {
   public List<ArticleDto> reloadMyStockFromMkm(Model model) {
     try {
       List<ArticleEntity> articles = articleService.reloadStockFromMkm();
-      return articles.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
+      return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
     } catch (IOException e) {
       //TODO throw mkm-exception and handle with user. g.g. https://www.baeldung.com/exception-handling-for-rest-with-spring
       e.printStackTrace();
