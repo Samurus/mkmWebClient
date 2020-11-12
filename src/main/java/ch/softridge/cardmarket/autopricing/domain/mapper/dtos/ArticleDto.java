@@ -1,6 +1,5 @@
 package ch.softridge.cardmarket.autopricing.domain.mapper.dtos;
 
-import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.entity.User;
 import de.cardmarket4j.entity.enumeration.Condition;
@@ -34,6 +33,6 @@ public class ArticleDto {
   private boolean playset;
   private boolean firstEdition;
 
-  private ArticlePriceEntity articlePriceEntity;
+  private ArticlePriceDto articlePriceEntity;
 
 }

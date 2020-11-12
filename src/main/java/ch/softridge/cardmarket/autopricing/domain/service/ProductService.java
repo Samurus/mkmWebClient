@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -160,5 +161,12 @@ public class ProductService {
 
   public List<ProductEntity> findAllByExpansionName(String name) {
     return productRepository.findAllByExpansionNameContaining(name);
+  }
+
+  public List<String> findAllExpansionNames() {
+    int magicSingleCode = 1;
+    return productRepository.findExpansionNamesDistinctByCategoryId(magicSingleCode).stream()
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 }

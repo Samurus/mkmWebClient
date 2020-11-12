@@ -6,6 +6,7 @@ import ch.softridge.cardmarket.autopricing.domain.entity.ArticleEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ArticlePriceEntity;
 import ch.softridge.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ArticleMapper;
+import ch.softridge.cardmarket.autopricing.domain.mapper.ArticlePriceMapper;
 import ch.softridge.cardmarket.autopricing.domain.mapper.ProductMapper;
 import ch.softridge.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.softridge.cardmarket.autopricing.domain.repository.ArticleRepository;
@@ -53,6 +54,9 @@ public class ArticleService {
 
   @Autowired
   private ProductMapper productMapper;
+
+  @Autowired
+  ArticlePriceMapper articlePriceMapper;
 
 
   public List<ArticleEntity> reloadStockFromMkm() throws IOException {
@@ -102,6 +106,10 @@ public class ArticleService {
         .collect(Collectors.toList());
     List<ArticleEntity> byArticleIds = articleRepository.findByArticleIds(collect);
     articleRepository.deleteInBatch(byArticleIds);
+
+    List<ArticlePriceEntity> pricesByArticleIds = priceRepository.findByArticleIds(collect);
+    priceRepository.deleteInBatch(pricesByArticleIds);
+
     return updateArticleStock(articleEntities);
   }
 
@@ -114,16 +122,23 @@ public class ArticleService {
     Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream()
         .collect(groupingBy(ArticlePriceEntity::getArticleId));
 
+    List<ArticleDto> allWithPrices = getArticleDtosWithCheapestPrice(articleDtos, prices);
+    return allWithPrices;
+  }
+
+  private List<ArticleDto> getArticleDtosWithCheapestPrice(List<ArticleDto> articleDtos,
+      Map<Integer, List<ArticlePriceEntity>> prices) {
     List<ArticleDto> allWithPrices = new ArrayList<>();
     articleDtos.forEach(articleEntity -> {
-      ArticlePriceEntity cheapestPrice = prices.get(articleEntity.getArticleId()).stream()
-          .min(Comparator.comparing(ArticlePriceEntity::getPrice))
-          .orElseThrow(NoSuchElementException::new);
-      articleEntity.setArticlePriceEntity(cheapestPrice);
-      articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
+      if (null != prices.get(articleEntity.getArticleId())) {
+        ArticlePriceEntity cheapestPrice = prices.get(articleEntity.getArticleId()).stream()
+            .min(Comparator.comparing(ArticlePriceEntity::getPrice))
+            .orElseThrow(NoSuchElementException::new);
+        articleEntity.setArticlePriceEntity(articlePriceMapper.toDto(cheapestPrice));
+        articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
+      }
       allWithPrices.add(articleEntity);
     });
-
     return allWithPrices;
   }
 
@@ -145,7 +160,7 @@ public class ArticleService {
       ArticlePriceEntity cheapestPrice = byArticleId.stream()
           .min(Comparator.comparing(ArticlePriceEntity::getPrice))
           .orElseThrow(NoSuchElementException::new);
-      articleEntity.setArticlePriceEntity(cheapestPrice);
+      articleEntity.setArticlePriceEntity(articlePriceMapper.toDto(cheapestPrice));
       articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
       allArticlesWithCheapestPriceByExpansion.add(articleEntity);
     });
@@ -163,19 +178,12 @@ public class ArticleService {
     List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::entityToDto)
         .collect(Collectors.toList());
 
-    List<ArticleDto> allArticlesWithCheapestPriceByExpansion = new ArrayList<>();
-    articleDtos.forEach(articleEntity -> {
-      List<ArticlePriceEntity> byArticleId = priceRepository
-          .findByArticleId(articleEntity.getArticleId());
-      ArticlePriceEntity cheapestPrice = byArticleId.stream()
-          .min(Comparator.comparing(ArticlePriceEntity::getPrice))
-          .orElseThrow(NoSuchElementException::new);
-      articleEntity.setArticlePriceEntity(cheapestPrice);
-      articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
-      allArticlesWithCheapestPriceByExpansion.add(articleEntity);
-    });
+    List<ArticlePriceEntity> byArticleId = priceRepository.findAll();
+    Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream()
+        .collect(groupingBy(ArticlePriceEntity::getArticleId));
 
-    return allArticlesWithCheapestPriceByExpansion;
+    List<ArticleDto> allWithPrices = getArticleDtosWithCheapestPrice(articleDtos, prices);
+    return allWithPrices;
   }
 
   public List<ArticleEntity> findAll() {
