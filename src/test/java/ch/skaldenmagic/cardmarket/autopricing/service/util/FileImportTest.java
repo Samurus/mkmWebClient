@@ -41,7 +41,7 @@ class FileImportTest {
 
     @Test
     public void readCsv() throws IOException {
-        List<ProductEntity> result = FileImport.readSorterProductCSV("MkmProductsfile.csv");
+        List<ProductEntity> result = FileImport.readSorterProductCSV("MkmProductsfileTest.csv");
         Assertions.assertEquals(190209,result.size());
     }
 
