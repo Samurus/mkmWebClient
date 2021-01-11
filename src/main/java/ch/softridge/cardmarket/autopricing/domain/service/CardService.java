@@ -3,9 +3,9 @@ package ch.softridge.cardmarket.autopricing.domain.service;
 import ch.softridge.cardmarket.autopricing.domain.model.Card;
 import ch.softridge.cardmarket.autopricing.domain.repository.CardRepository;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -40,8 +40,9 @@ public class CardService {
     cardRepository.deleteAll();
   }
 
-  public List<Card> readSorterCSV(String fileName) {
-    try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileName))) {
+  public List<Card> readSorterCSV(byte[] content) {
+    try (BufferedReader reader = new BufferedReader(
+        new InputStreamReader(new ByteArrayInputStream(content)))) {
       return reader.lines()
           .skip(1)
           .map(line -> new Card(line.split(",", 6)))

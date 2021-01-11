@@ -2,15 +2,11 @@ package ch.softridge.cardmarket.autopricing.controller;
 
 import ch.softridge.cardmarket.autopricing.domain.service.CardService;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,32 +34,19 @@ public class SorterUploadController {
     return "sorterUpload";
   }
 
-  @PostMapping("/sorterUpload/upload")
-  public String uploadFile(@RequestParam("file") MultipartFile file,
+  @PostMapping("/upload")
+  public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file,
       RedirectAttributes attributes) {
 
     // check if file is empty
     if (file.isEmpty()) {
-      attributes.addFlashAttribute("message", "Please select a file to upload.");
-      return "redirect:/sorterUpload";
+      return ResponseEntity.badRequest().build();
     }
-
-    // normalize the file path
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-    log.info(fileName);
-    // save the file on the local file system
     try {
-      Path path = Paths.get(UPLOAD_DIR + fileName);
-      log.info(path.toString());
-      Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      e.printStackTrace();
+      cardService.addAll(cardService.readSorterCSV(file.getBytes()));
+    } catch (IOException ioException) {
+      ioException.printStackTrace();
     }
-
-    // return success response
-    attributes.addFlashAttribute("message", "You successfully uploaded " + fileName + '!');
-    cardService.addAll(cardService.readSorterCSV(fileName));
-    return "redirect:/sorterUpload";
+    return ResponseEntity.ok().build();
   }
-
 }
