@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -179,7 +180,12 @@ public class ProductService {
     for (Card c : sorterCards) {
       ExpansionEntity expansion = expansionService.getByCode(c.getSet());
       if (expansion != null) {
-        obviousProducts.add(findByNameAndExpansion(c.getTitle(), expansion.getId()));
+        Optional<ProductEntity> product = findByNameAndExpansion(c.getTitle(), expansion.getId());
+        if (product.isPresent()) {
+          obviousProducts.add(product.get());
+        } else {
+          unknownProducts.add(c);
+        }
       } else {
         List<ProductEntity> possibleProducts = findAllByName(c.getTitle());
         if (!possibleProducts.isEmpty()) {
@@ -192,8 +198,8 @@ public class ProductService {
     return obviousProducts;
   }
 
-  public ProductEntity findByNameAndExpansion(String name, Long expansionId) {
-    return productRepository.findByNameAndExpansionId(name, expansionId);
+  public Optional<ProductEntity> findByNameAndExpansion(String name, Long expansionId) {
+    return Optional.ofNullable(productRepository.findByNameAndExpansionId(name, expansionId));
   }
 
   private List<ProductEntity> findAllByName(String name) {
