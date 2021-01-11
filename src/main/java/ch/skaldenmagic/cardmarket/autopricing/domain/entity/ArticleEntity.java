@@ -4,6 +4,7 @@ import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.entity.enumeration.Condition;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,4 +60,20 @@ public class ArticleEntity extends BaseEntity {
 
   private boolean firstEdition; //only Yu-Gi-Oh! https://api.cardmarket.com/ws/documentation/API_2.0:Stock
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ArticleEntity that = (ArticleEntity) o;
+    return articleId == that.articleId;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), articleId);
+  }
 }

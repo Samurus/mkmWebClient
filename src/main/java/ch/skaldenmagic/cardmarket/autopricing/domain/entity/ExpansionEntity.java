@@ -35,4 +35,24 @@ public class ExpansionEntity extends BaseEntity {
   private LocalDateTime releaseDate;
   private Game game;
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ExpansionEntity that = (ExpansionEntity) o;
+
+    return expansionId.equals(that.expansionId);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + expansionId.hashCode();
+    return result;
+  }
 }

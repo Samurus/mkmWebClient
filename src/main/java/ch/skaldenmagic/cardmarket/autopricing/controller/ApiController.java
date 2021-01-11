@@ -3,8 +3,8 @@ package ch.skaldenmagic.cardmarket.autopricing.controller;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.model.Rarity;
-import ch.skaldenmagic.cardmarket.autopricing.domain.service.CardService;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.MkmService;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ApiController {
 
   private final MkmService mkmService;
-  private final CardService cardService;
+  private final UploadService uploadService;
 
   @Autowired
-  public ApiController(MkmService mkmService, CardService cardService) {
+  public ApiController(MkmService mkmService, UploadService uploadService) {
     this.mkmService = mkmService;
-    this.cardService = cardService;
+    this.uploadService = uploadService;
   }
 
   @GetMapping({"/", "/index"})

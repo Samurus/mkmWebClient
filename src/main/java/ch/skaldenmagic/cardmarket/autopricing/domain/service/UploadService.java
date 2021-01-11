@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
  * @Date 03.07.20
  */
 @Service
-public class CardService {
+public class UploadService {
 
-  private static final Logger log = LoggerFactory.getLogger(CardService.class);
+  private static final Logger log = LoggerFactory.getLogger(UploadService.class);
   private final CardRepository cardRepository;
 
   @Autowired
-  public CardService(CardRepository cardRepository) {
+  public UploadService(CardRepository cardRepository) {
     this.cardRepository = cardRepository;
   }
 

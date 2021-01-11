@@ -1,11 +1,14 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ProductMapper;
+import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.ProductRepository;
 import ch.skaldenmagic.cardmarket.autopricing.util.CSVUtil;
 import ch.skaldenmagic.cardmarket.autopricing.util.FileImport;
+import de.cardmarket4j.entity.Product;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -14,9 +17,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -71,7 +76,6 @@ public class ProductService {
           .map(line -> parseProductCSV(CSVUtil.parseLine(line)))
           .filter(productEntity -> productEntity.getDateAdded().isAfter(mostRecentDate))
           .collect(Collectors.toList());
-
       updateAllProducts(entities);
     } catch (IOException e) {
       log.error(e.getMessage());
@@ -165,5 +169,59 @@ public class ProductService {
     return productRepository.findExpansionNamesDistinctByCategoryId(magicSingleCode).stream()
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
+  }
+
+  public List<ProductEntity> getFromSorterData(List<Card> sorterCards) {
+    List<ProductEntity> obviousProducts = new ArrayList<>();
+    List<ProductEntity> ambiguousProducts = new ArrayList<>();
+    List<Card> unknownProducts = new ArrayList<>();
+
+    for (Card c : sorterCards) {
+      ExpansionEntity expansion = expansionService.getByCode(c.getSet());
+      if (expansion != null) {
+        obviousProducts.add(findByNameAndExpansion(c.getTitle(), expansion.getId()));
+      } else {
+        List<ProductEntity> possibleProducts = findAllByName(c.getTitle());
+        if (!possibleProducts.isEmpty()) {
+          ambiguousProducts.addAll(possibleProducts);
+        } else {
+          unknownProducts.add(c);
+        }
+      }
+    }
+    return obviousProducts;
+  }
+
+  public ProductEntity findByNameAndExpansion(String name, Long expansionId) {
+    return productRepository.findByNameAndExpansionId(name, expansionId);
+  }
+
+  private List<ProductEntity> findAllByName(String name) {
+    return productRepository.findAllByName(name);
+  }
+
+  public void deleteAll() {
+    productRepository.deleteAll();
+  }
+
+  public void initProductDatabase() {
+    try {
+      expansionService.updateExpansionDB();
+      List<ExpansionEntity> expansions = expansionService.findAll();
+
+      List<ProductEntity> mkmProducts = new ArrayList<>();
+      for (ExpansionEntity expansion : expansions) {
+        Set<Product> apiRes = mkmService.getCardMarket().getMarketplaceService()
+            .getExpansionSingles(expansion.getExpansionId());
+        for (Product p : apiRes) {
+          ProductEntity e = productMapper.mkmToEntity(p);
+          e.setExpansion(expansion);
+          mkmProducts.add(e);
+        }
+      }
+      productRepository.saveAll(mkmProducts);
+    } catch (IOException e) {
+      //Todo handle exeptions correctly
+    }
   }
 }

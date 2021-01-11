@@ -5,6 +5,7 @@ import de.cardmarket4j.entity.enumeration.Game;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,4 +67,20 @@ public class ProductEntity extends BaseEntity {
     this.categoryName = sorterResult[3];
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProductEntity that = (ProductEntity) o;
+    return productId.equals(that.productId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), productId);
+  }
 }

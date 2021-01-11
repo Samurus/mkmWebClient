@@ -1,7 +1,12 @@
 package ch.skaldenmagic.cardmarket.autopricing.controller;
 
-import ch.skaldenmagic.cardmarket.autopricing.domain.service.CardService;
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.ProductService;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.UploadService;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +27,13 @@ public class SorterUploadController {
 
   private static final Logger log = LoggerFactory.getLogger(SorterUploadController.class);
   private final String UPLOAD_DIR = "./uploads/";
-  private final CardService cardService;
+  private final UploadService uploadService;
+  private final ProductService productService;
 
   @Autowired
-  public SorterUploadController(CardService cardService) {
-    this.cardService = cardService;
+  public SorterUploadController(ProductService productService, UploadService uploadService) {
+    this.productService = productService;
+    this.uploadService = uploadService;
   }
 
   @GetMapping("/sorterUpload")
@@ -42,11 +49,13 @@ public class SorterUploadController {
     if (file.isEmpty()) {
       return ResponseEntity.badRequest().build();
     }
+    List<Card> sorterCards = new ArrayList<>();
     try {
-      cardService.addAll(cardService.readSorterCSV(file.getBytes()));
+      sorterCards = uploadService.readSorterCSV(file.getBytes());
     } catch (IOException ioException) {
       ioException.printStackTrace();
     }
+    List<ProductEntity> mkmProducts = productService.getFromSorterData(sorterCards);
     return ResponseEntity.ok().build();
   }
 }

@@ -21,9 +21,19 @@ public class ProductController {
   private ProductService productService;
 
 
+  @GetMapping("/reset")
+  public void resetProductDatabase() {
+    productService.deleteAll();
+  }
+
   @GetMapping("/import")
-  public List<ProductEntity> persistProductFile() throws IOException {
-    return productService.persistProductFile();
+  public void persistProductFile() throws IOException {
+    productService.initProductDatabase();
+  }
+
+  @GetMapping("/update")
+  public List<ProductEntity> updateProductDatabase() {
+    return null;
   }
 
 

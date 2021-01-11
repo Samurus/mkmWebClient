@@ -11,4 +11,6 @@ public interface ExpansionRepository extends JpaRepository<ExpansionEntity, Long
   List<ExpansionEntity> findAllByNameContaining(String name);
 
   ExpansionEntity getByExpansionId(Integer expansionId);
+
+  ExpansionEntity findByCode(String expansionCode);
 }
