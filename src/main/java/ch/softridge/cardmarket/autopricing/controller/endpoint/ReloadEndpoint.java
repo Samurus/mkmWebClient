@@ -11,8 +11,11 @@ import ch.softridge.cardmarket.autopricing.domain.service.PriceService;
 import ch.softridge.cardmarket.autopricing.domain.service.ProductService;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/reload")
 public class ReloadEndpoint {
+
+  private static final Logger log = LoggerFactory.getLogger(ReloadEndpoint.class);
 
   @Autowired
   private PriceService priceService;
@@ -40,9 +45,11 @@ public class ReloadEndpoint {
   private ExpansionServie expansionService;
 
 
+  //TODO return DTO
   @GetMapping("/prices/{name}")
   public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name)
       throws IOException {
+    priceService.reloadPricesForUser(name);
     return priceService.reloadPricesRecommendations(name);
   }
 
@@ -50,7 +57,7 @@ public class ReloadEndpoint {
   public List<ArticleDto> reloadMyStockFromMkm(Model model) {
     try {
       List<ArticleEntity> articles = articleService.reloadStockFromMkm();
-      return articles.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
+      return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
     } catch (IOException e) {
       //TODO throw mkm-exception and handle with user. g.g. https://www.baeldung.com/exception-handling-for-rest-with-spring
       e.printStackTrace();
@@ -64,9 +71,21 @@ public class ReloadEndpoint {
     productService.loadMkmProductlist();
   }
 
+  @GetMapping("/products/file")
+  @Deprecated
+  public void persistProductFileFromFile() throws IOException {
+    productService.persistProductFile();
+  }
 
+
+  //TODO return DTO
   @GetMapping("/expansions")
   public List<ExpansionEntity> reloadExpansions() throws IOException {
-    return expansionService.persistExpansions();
+    try {
+      return expansionService.persistExpansions();
+    } catch (Exception e) {
+      log.error(e.getMessage() + Arrays.toString(e.getStackTrace()));
+      return new ArrayList<>();
+    }
   }
 }

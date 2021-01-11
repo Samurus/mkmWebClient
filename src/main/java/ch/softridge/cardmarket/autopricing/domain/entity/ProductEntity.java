@@ -1,11 +1,14 @@
 package ch.softridge.cardmarket.autopricing.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.cardmarket4j.entity.enumeration.Game;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -23,6 +26,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
 public class ProductEntity extends BaseEntity {
+
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = false)
+  private Collection<ArticleEntity> articleEntities = new ArrayList<>();
 
   @Column(name = "product_id")
   private Integer productId;
@@ -45,9 +53,10 @@ public class ProductEntity extends BaseEntity {
   private ExpansionEntity expansion;
   @OneToOne
   private MkmPriceGuide priceGuide;
-  @OneToMany
-  @JoinColumn(name = "reprint_product_id")
-  private List<ProductReprintEntity> listReprintProductIds;
+  //TODO implement reprint relation table
+//  @OneToMany
+//  @JoinColumn(name = "reprint_product_id")
+//  private List<ProductReprintEntity> listReprintProductIds;
 
   //todo: delegate to service
   public ProductEntity(String[] sorterResult) {
@@ -55,9 +64,6 @@ public class ProductEntity extends BaseEntity {
     this.name = sorterResult[1];
     this.categoryId = Integer.valueOf(sorterResult[2]);
     this.categoryName = sorterResult[3];
-    //this.expansionId = Integer.valueOf(sorterResult[4]);
-    //this.metaCardId = Integer.valueOf(sorterResult[5]);
-    //this.dateAdded = sorterResult[6].replaceAll("\"","");
   }
 
 }

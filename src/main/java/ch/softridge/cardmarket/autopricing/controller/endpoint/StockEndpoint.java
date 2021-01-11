@@ -37,13 +37,13 @@ public class StockEndpoint {
   @GetMapping("/articles")
   public List<ArticleDto> loadMyStock() {
     List<ArticleEntity> articles = articleService.findAll();
-    return articles.stream().map(articleMapper::articleEntityToDto).collect(Collectors.toList());
+    return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
   @PostMapping("/articles")
-  public List<ArticleEntity> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
+  public List<ArticleDto> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
       throws IOException {
-    return articleService.updateAll(articleDtos);
+    return articleService.updateAll(articleDtos).stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
   @GetMapping("/articles/min-price")
@@ -51,16 +51,24 @@ public class StockEndpoint {
     return articleService.findAllWithMinPrice();
   }
 
+  //TODO return DTO
   @GetMapping("/expansion/{name}")
   public List<ExpansionEntity> findExpansionsByName(@PathVariable("name") String name)
       throws IOException {
     return expansionService.findAllByNameContaining(name);
   }
 
+  //FIXME
   @GetMapping("/articles/expansion/{id}")
   public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(
       @PathVariable("id") Integer id) throws IOException {
     return articleService.findAllArticlesWithCheapestPriceByExpansion(id);
+  }
+
+  @GetMapping("/articles/expansion/name/{name}")
+  public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansionName(
+      @PathVariable("name") String name) throws IOException {
+    return articleService.findAllArticlesWithCheapestPriceByExpansion(name);
   }
 
 }

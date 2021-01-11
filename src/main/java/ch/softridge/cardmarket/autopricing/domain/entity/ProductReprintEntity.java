@@ -20,4 +20,5 @@ import lombok.Setter;
 public class ProductReprintEntity extends BaseEntity {
 
   int productId;
+  int reprintProductId;
 }

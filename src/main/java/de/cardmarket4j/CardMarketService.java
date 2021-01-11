@@ -5,12 +5,12 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import de.cardmarket4j.entity.enumeration.HTTPMethod;
-import de.cardmarket4j.service.*;
+import de.cardmarket4j.service.AccountService;
+import de.cardmarket4j.service.AuthenticationService;
+import de.cardmarket4j.service.MarketplaceService;
+import de.cardmarket4j.service.OrderService;
+import de.cardmarket4j.service.StockService;
 import de.cardmarket4j.util.HTTPUtils;
-import org.javatuples.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import org.javatuples.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CardMarketService {
 	private static final String URI = "https://api.cardmarket.com/ws/v2.0/output.json/";
@@ -36,6 +39,7 @@ public class CardMarketService {
 	private Pair<Integer, JsonElement> lastResponse;
 	private int requestCount;
 	private int requestLimit;
+	private String contentRange;
 
 	public CardMarketService(String appToken, String appSecret, String accessToken, String accessTokenSecret) {
 		this.authenticationService = new AuthenticationService(appToken, appSecret, accessToken, accessTokenSecret);
@@ -69,6 +73,8 @@ public class CardMarketService {
 		return requestLimit;
 	}
 
+	public String getContentRange() {return contentRange;}
+
 	public StockService getStockService() {
 		return stockService;
 	}
@@ -96,8 +102,9 @@ public class CardMarketService {
             LOGGER.trace("Response Header: {}", HTTPUtils.getResponseHeader(connection));
             requestCount = connection.getHeaderFieldInt("X-Request-Limit-Count", -1);
             requestLimit = connection.getHeaderFieldInt("X-Request-Limit-Max", -1);
+					  contentRange = connection.getHeaderField("Content-Range");
 
-            BufferedReader rd = new BufferedReader(new InputStreamReader(
+				BufferedReader rd = new BufferedReader(new InputStreamReader(
                     (responseCode == 200 || responseCode == 206 || responseCode == 204) ? connection.getInputStream()
                             : connection.getErrorStream()));
             StringBuffer sb = new StringBuffer();
@@ -145,6 +152,7 @@ public class CardMarketService {
 			LOGGER.trace("Response Header: {}", HTTPUtils.getResponseHeader(connection));
 			requestCount = connection.getHeaderFieldInt("X-Request-Limit-Count", -1);
 			requestLimit = connection.getHeaderFieldInt("X-Request-Limit-Max", -1);
+			contentRange = connection.getHeaderField("Content-Range");
 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					(responseCode == 200 || responseCode == 206 || responseCode == 204) ? connection.getInputStream()
@@ -193,6 +201,7 @@ public class CardMarketService {
 			LOGGER.trace("Response Header: {}", HTTPUtils.getResponseHeader(connection));
 			requestCount = connection.getHeaderFieldInt("X-Request-Limit-Count", -1);
 			requestLimit = connection.getHeaderFieldInt("X-Request-Limit-Max", -1);
+			contentRange = connection.getHeaderField("Content-Range");
 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					(responseCode == 200 || responseCode == 206 || responseCode == 204) ? connection.getInputStream()

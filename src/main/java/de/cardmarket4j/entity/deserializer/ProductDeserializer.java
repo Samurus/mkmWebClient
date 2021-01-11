@@ -44,7 +44,7 @@ public class ProductDeserializer implements JsonDeserializer<Product> {
       categoryId = JsonIO.parseInteger(jObject.get("category").getAsJsonObject(), "idCategory");
     }
 
-    Integer categoryName = JsonIO.parseInteger(jObject, "categoryName");
+    String categoryName = JsonIO.parseString(jObject, "categoryName");
     String selfUrl = JsonIO.parseString(jObject, "website");
     String imageUrl = JsonIO.parseString(jObject, "image");
 

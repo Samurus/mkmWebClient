@@ -17,7 +17,7 @@ public class Product {
   private String name;
   private Map<LanguageCode, String> mapLocalizedNames;
   private Integer categoryId;
-  private Integer categoryName;
+  private String categoryName;
   private String selfUrl;
   private String imageUrl;
   private Game game;
@@ -29,7 +29,7 @@ public class Product {
   private List<Integer> listReprintProductIds;
 
   public Product(Integer productId, Integer metaproductId, Integer totalReprints, String name,
-      Map<LanguageCode, String> mapLocalizedNames, Integer categoryId, Integer categoryName,
+      Map<LanguageCode, String> mapLocalizedNames, Integer categoryId, String categoryName,
       String selfUrl,
       String imageUrl, Game game, String expansionCollectionNumber, String rarity,
       String expansionName,
@@ -180,11 +180,11 @@ public class Product {
     this.categoryId = categoryId;
   }
 
-  public Integer getCategoryName() {
+  public String getCategoryName() {
     return categoryName;
   }
 
-  public void setCategoryName(Integer categoryName) {
+  public void setCategoryName(String categoryName) {
     this.categoryName = categoryName;
   }
 
