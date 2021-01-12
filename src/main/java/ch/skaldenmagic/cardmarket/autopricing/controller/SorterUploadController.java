@@ -1,6 +1,6 @@
 package ch.skaldenmagic.cardmarket.autopricing.controller;
 
-import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.ProductService;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.UploadService;
@@ -43,7 +43,7 @@ public class SorterUploadController {
   }
 
   @PostMapping("/upload")
-  public ResponseEntity<List<ProductEntity>> uploadFile(@RequestParam("file") MultipartFile file,
+  public ResponseEntity<List<ArticleDto>> uploadFile(@RequestParam("file") MultipartFile file,
       RedirectAttributes attributes) {
 
     // check if file is empty
@@ -56,7 +56,7 @@ public class SorterUploadController {
     } catch (IOException ioException) {
       ioException.printStackTrace();
     }
-    List<ProductEntity> mkmProducts = productService.getFromSorterData(sorterCards);
-    return new ResponseEntity<>(mkmProducts, HttpStatus.OK);
+    List<ArticleDto> uploaderResult = uploadService.prepareUpload(sorterCards);
+    return new ResponseEntity<>(uploaderResult, HttpStatus.OK);
   }
 }

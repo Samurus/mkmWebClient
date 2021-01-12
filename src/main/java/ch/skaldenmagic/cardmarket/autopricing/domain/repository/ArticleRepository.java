@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
+  List<ArticleEntity> findAllByProductId(Long productId);
+
   @Query("select o from ArticleEntity o where articleId in :articleIds")
   List<ArticleEntity> findByArticleIds(@Param("articleIds") List<Integer> articleIds);
 

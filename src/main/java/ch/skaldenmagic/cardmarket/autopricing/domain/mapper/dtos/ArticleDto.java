@@ -16,8 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ArticleDto {
 
-  private int articleId;
-  private Integer productId;
+  private Integer articleId;
   private LanguageCode languageCode;
   private String comment;
   private BigDecimal price;

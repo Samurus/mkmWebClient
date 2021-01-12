@@ -1,6 +1,8 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ArticleEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.CardRepository;
 import java.io.BufferedReader;
@@ -46,26 +48,23 @@ public class UploadService {
     cardRepository.save(card);
   }
 
-  /**
-   * Search the Local Article Database and return a List of possible existing Articles. Only
-   * available Request criteria are EN-Name and Set. Therefore it is not necessary the correct
-   * Article.
-   *
-   * @param sorterResult Parsed CSV-Data
-   * @return possible Articles
-   */
-  public List<ArticleEntity> alreadyKnownArticles(List<Card> sorterResult) {
-    List<ArticleEntity> existingArticles = new ArrayList<>();
-
-    return existingArticles;
-  }
-
   public void deleteAll() {
     cardRepository.deleteAll();
   }
 
   public List<Card> findAll() {
     return cardRepository.findAll();
+  }
+
+  /**
+   * Prepare a Dataset According to MKM Articles. Entries which could not be identified are stored
+   * as "Not Found" Article.
+   *
+   * @param sorterCards Parsed CSV Data
+   * @return prepared Article DTO's
+   */
+  public List<ArticleDto> prepareUpload(List<Card> sorterCards) {
+    return productService.getFromSorterData(sorterCards);
   }
 
   public List<Card> readSorterCSV(byte[] content) {
@@ -80,5 +79,21 @@ public class UploadService {
       e.printStackTrace();
       throw new IllegalStateException("failed");
     }
+  }
+
+  /**
+   * Search the Local Article Database and return a List of possible existing Articles. Only
+   * available Request criteria are EN-Name and Set. Therefore it is not necessary the correct
+   * Article.
+   *
+   * @param sorterResult Found products in CSV-Data
+   * @return possible Articles
+   */
+  private List<ArticleEntity> alreadyKnownArticles(List<ProductEntity> sorterResult) {
+    List<ArticleEntity> existingArticles = new ArrayList<>();
+    for (ProductEntity p : sorterResult) {
+      existingArticles.addAll(articleService.findAllByProduct(p.getId()));
+    }
+    return existingArticles;
   }
 }

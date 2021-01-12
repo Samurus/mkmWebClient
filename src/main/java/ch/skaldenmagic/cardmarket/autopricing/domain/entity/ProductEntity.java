@@ -1,16 +1,17 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.cardmarket4j.entity.enumeration.Game;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -38,8 +39,8 @@ public class ProductEntity extends BaseEntity {
   private Integer metaproductId;
   private Integer totalReprints;
   private String name;
-  @OneToMany
-  @JoinColumn(name = "localization_id")
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JsonIgnoreProperties("product")
   private Set<LocalizationEntity> localizations;
   private Integer categoryId;
   private String categoryName;

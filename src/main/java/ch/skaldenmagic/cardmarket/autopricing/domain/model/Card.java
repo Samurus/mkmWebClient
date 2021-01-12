@@ -1,5 +1,6 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.model;
 
+import de.cardmarket4j.entity.enumeration.Condition;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

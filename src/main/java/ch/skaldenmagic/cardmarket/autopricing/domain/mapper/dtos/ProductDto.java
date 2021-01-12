@@ -1,7 +1,6 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ExpansionEntity;
-import ch.skaldenmagic.cardmarket.autopricing.domain.entity.LocalizationEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.MkmPriceGuide;
 import de.cardmarket4j.entity.enumeration.Game;
 import java.util.Set;
@@ -21,11 +20,10 @@ public class ProductDto {
   private Integer categoryId;
   private String categoryName;
   private Integer expansionId;
-  private Integer metaCardId;
   private String dateAdded;
   private Integer metaproductId;
   private Integer totalReprints;
-  private Set<LocalizationEntity> localizations;
+  private Set<LocalizationDto> localizations;
   private String selfUrl;
   private String imageUrl;
   private Game game;

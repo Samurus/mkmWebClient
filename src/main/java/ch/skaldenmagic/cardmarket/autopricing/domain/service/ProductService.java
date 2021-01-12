@@ -1,21 +1,29 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ExpansionEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.LocalizationEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ArticleMapper;
+import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.LocalizationMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ProductMapper;
+import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
+import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ProductDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.ProductRepository;
 import ch.skaldenmagic.cardmarket.autopricing.util.CSVUtil;
 import ch.skaldenmagic.cardmarket.autopricing.util.FileImport;
+import com.neovisionaries.i18n.LanguageCode;
 import de.cardmarket4j.entity.Product;
+import de.cardmarket4j.entity.enumeration.Condition;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +45,11 @@ public class ProductService {
 
   private static final Logger log = LoggerFactory.getLogger(ProductService.class);
   @Autowired
-  ArticleMapper articleMapper;
+  private ArticleMapper articleMapper;
   @Autowired
-  ProductMapper productMapper;
+  private ProductMapper productMapper;
+  @Autowired
+  private LocalizationMapper localizationMapper;
   @Autowired
   private ProductRepository productRepository;
   @Autowired
@@ -48,6 +58,8 @@ public class ProductService {
   private ExpansionServie expansionService;
   @Autowired
   private ArticleService articleService;
+  @Autowired
+  private LocalizationService localizationService;
 
   public void deleteAll() {
     productRepository.deleteAll();
@@ -78,30 +90,40 @@ public class ProductService {
     return Optional.ofNullable(productRepository.findByNameAndExpansionId(name, expansionId));
   }
 
-  public List<ProductEntity> getFromSorterData(List<Card> sorterCards) {
-    List<ProductEntity> obviousProducts = new ArrayList<>();
-    List<ProductEntity> ambiguousProducts = new ArrayList<>();
-    List<Card> unknownProducts = new ArrayList<>();
-
+  public List<ArticleDto> getFromSorterData(List<Card> sorterCards) {
+    List<ArticleDto> result = new ArrayList<>();
+    ArticleDto unknown = new ArticleDto();
+    ProductDto unkonwProduct = new ProductDto();
+    unkonwProduct.setName("Unknown Card");
+    unkonwProduct.setImageUrl("./img/items/1/WAR/371876.jpg");
+    unknown.setComment("Unkwon Article");
+    unknown.setProduct(unkonwProduct);
+    unknown.setQuantity(0);
     for (Card c : sorterCards) {
       ExpansionEntity expansion = expansionService.getByCode(c.getSet());
       if (expansion != null) {
         Optional<ProductEntity> product = findByNameAndExpansion(c.getTitle(), expansion.getId());
         if (product.isPresent()) {
-          obviousProducts.add(product.get());
+          ProductDto productDto = productMapper.entityToDto(product.get());
+          result.add(defaultArticleDTO(c, productDto));
         } else {
-          unknownProducts.add(c);
+          unknown.setQuantity(unknown.getQuantity() + 1);
         }
       } else {
         List<ProductEntity> possibleProducts = findAllByName(c.getTitle());
         if (!possibleProducts.isEmpty()) {
-          ambiguousProducts.addAll(possibleProducts);
+          result.addAll(possibleProducts.stream()
+              .map(productEntity -> defaultArticleDTO(c, productMapper.entityToDto(productEntity)))
+              .collect(Collectors.toList()));
         } else {
-          unknownProducts.add(c);
+          unknown.setQuantity(unknown.getQuantity() + 1);
         }
       }
     }
-    return obviousProducts;
+    if (unknown.getQuantity() > 0) {
+      result.add(unknown);
+    }
+    return result;
   }
 
   public void initProductDatabase() {
@@ -115,6 +137,10 @@ public class ProductService {
             .getExpansionSingles(expansion.getExpansionId());
         for (Product p : apiRes) {
           ProductEntity e = productMapper.mkmToEntity(p);
+          Set<LocalizationEntity> localizations = localizationMapper
+              .mapToLocalization(p.getMapLocalizedNames(), e);
+          //localizationService.saveAll(localizations);
+          e.setLocalizations(localizations);
           e.setExpansion(expansion);
           mkmProducts.add(e);
         }
@@ -169,6 +195,12 @@ public class ProductService {
 
   public ProductEntity saveNewProduct(ProductEntity product) {
     return productRepository.save(product);
+  }
+
+  private ArticleDto defaultArticleDTO(Card c, ProductDto productDto) {
+    return new ArticleDto(null, LanguageCode.en, "Added By Sorter",
+        BigDecimal.valueOf(c.getPrice()), c.getCount(), false, productDto, null,
+        LocalDateTime.now(), Condition.NEAR_MINT, false, false, false, false, false, null);
   }
 
   private List<ProductEntity> findAllByName(String name) {
@@ -230,4 +262,5 @@ public class ProductService {
   List<ProductEntity> findByProductIdInList(List<Integer> productIds) {
     return productRepository.findByProductIdInList(productIds);
   }
+
 }

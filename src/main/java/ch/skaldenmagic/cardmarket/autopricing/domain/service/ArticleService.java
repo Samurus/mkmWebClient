@@ -101,6 +101,16 @@ public class ArticleService {
     return allArticlesWithCheapestPriceByExpansion;
   }
 
+  /**
+   * Get All articles Related to a Product
+   *
+   * @param productId desired ProductId
+   * @return related Articles
+   */
+  public List<ArticleEntity> findAllByProduct(Long productId) {
+    return articleRepository.findAllByProductId(productId);
+  }
+
   public List<ArticleDto> findAllWithMinPrice() {
     //TODO optimization with Databasequeries or Entities with oneToMany
     List<ArticleEntity> articles = articleRepository.findAll();

@@ -14,14 +14,17 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
  * @author Kevin Zellweger
  * @Date 28.10.20
  */
-@Mapper(componentModel = "spring", uses = {LocalizationMapper.class,
+@Mapper(componentModel = "spring", uses = {
     ExpansionMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ProductMapper {
 
   ProductDto dtoToMkm(Product product);
 
+  ProductDto entityToDto(ProductEntity productEntity);
+
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "localizations", ignore = true)
   ProductEntity mkmToEntity(Product product);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

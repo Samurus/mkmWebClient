@@ -21,7 +21,7 @@ public class ProductController {
   private ProductService productService;
 
   @GetMapping("/import")
-  public void persistProductFile() throws IOException {
+  public void importProductDatabase() throws IOException {
     productService.initProductDatabase();
   }
 
