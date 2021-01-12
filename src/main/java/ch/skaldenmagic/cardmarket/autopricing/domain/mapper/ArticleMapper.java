@@ -13,6 +13,15 @@ import org.mapstruct.Mapping;
         InjectionStrategy.CONSTRUCTOR)
 public interface ArticleMapper {
 
+  @Mapping(target = "inShoppingCart", ignore = true)
+  @Mapping(target = "product", ignore = true)
+  @Mapping(target = "seller", ignore = true)
+  @Mapping(target = "lastEdited", ignore = true)
+  @Mapping(target = "firstEdition", ignore = true)
+  Article dtoToMkm(ArticleDto articleDto);
+
+  ArticleDto entityToDto(ArticleEntity article);
+
   @Mapping(target = "version", ignore = true)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "product.productId", source = "productId")
@@ -22,15 +31,6 @@ public interface ArticleMapper {
   @Mapping(target = "product.rarity", source = "product.rarity")
   @Mapping(target = "product.expansionName", source = "product.expansionName")
   ArticleEntity mkmToEntity(Article article);
-
-  ArticleDto entityToDto(ArticleEntity article);
-
-  @Mapping(target = "inShoppingCart", ignore = true)
-  @Mapping(target = "product", ignore = true)
-  @Mapping(target = "seller", ignore = true)
-  @Mapping(target = "lastEdited", ignore = true)
-  @Mapping(target = "firstEdition", ignore = true)
-  Article dtoToMkm(ArticleDto articleDto);
 
 
 }

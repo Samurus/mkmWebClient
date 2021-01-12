@@ -14,9 +14,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PriceRepository extends JpaRepository<ArticlePriceEntity, Long> {
 
+  List<ArticlePriceEntity> findByArticleId(Integer articleId);
+
   @Query("select o from ArticlePriceEntity o where articleId in :articleIdList")
   List<ArticlePriceEntity> findByArticleIds(@Param("articleIdList") List<Integer> articleIdList);
-
-  List<ArticlePriceEntity> findByArticleId(Integer articleId);
 
 }

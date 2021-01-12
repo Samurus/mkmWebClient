@@ -20,15 +20,14 @@ public class ProductController {
   @Autowired
   private ProductService productService;
 
+  @GetMapping("/import")
+  public void persistProductFile() throws IOException {
+    productService.initProductDatabase();
+  }
 
   @GetMapping("/reset")
   public void resetProductDatabase() {
     productService.deleteAll();
-  }
-
-  @GetMapping("/import")
-  public void persistProductFile() throws IOException {
-    productService.initProductDatabase();
   }
 
   @GetMapping("/update")

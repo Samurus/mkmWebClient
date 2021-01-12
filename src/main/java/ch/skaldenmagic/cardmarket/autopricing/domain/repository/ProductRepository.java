@@ -14,8 +14,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
   List<ProductEntity> findAllByExpansionNameContaining(String name);
 
-  @Query(value = "select max (p.dateAdded) from ProductEntity p")
-  LocalDate getMostRecentDateAdded();
+  List<ProductEntity> findAllByName(String name);
+
+  //  @Query(value = "SELECT p from product p WHERE name =:name AND expansion_id = :expansionId")
+  ProductEntity findByNameAndExpansionId(String name, Long expansionId);
 
   @Query(value = "select p from ProductEntity p where product_id in :productIdList")
   List<ProductEntity> findByProductIdInList(List<Integer> productIdList);
@@ -23,8 +25,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
   @Query(value = "SELECT distinct p.expansionName FROM ProductEntity p WHERE category_id = :i")
   List<String> findExpansionNamesDistinctByCategoryId(int i);
 
-  //  @Query(value = "SELECT p from product p WHERE name =:name AND expansion_id = :expansionId")
-  ProductEntity findByNameAndExpansionId(String name, Long expansionId);
-
-  List<ProductEntity> findAllByName(String name);
+  @Query(value = "select max (p.dateAdded) from ProductEntity p")
+  LocalDate getMostRecentDateAdded();
 }

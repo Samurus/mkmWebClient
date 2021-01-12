@@ -1,71 +1,73 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>MKM Webclient</title>
+  <meta charset="UTF-8">
+  <title>MKM Webclient</title>
 
-    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.5.0/css/bootstrap.min.css} "/>
-    <link th:rel="stylesheet" th:href="@{webjars/font-awesome/5.13.0/css/all.css} "/>
+  <link th:href="@{webjars/bootstrap/4.5.0/css/bootstrap.min.css} " th:rel="stylesheet"/>
+  <link th:href="@{webjars/font-awesome/5.13.0/css/all.css} " th:rel="stylesheet"/>
 </head>
 <body>
 <!-- TODO: Function to set current nav-item on active -->
-<div th:fragment="header" id="header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">MKM Webclient</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/cards">Cards</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/sorterUpload">Upload from CSV</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link"><i class="fab fa-github"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<div id="header" th:fragment="header">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">MKM Webclient</a>
+      <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"
+              class="navbar-toggler" data-target="#navbarResponsive"
+              data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cards">Cards</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/sorterUpload">Upload from CSV</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"><i class="fab fa-github"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 </div>
 <div th:fragment="footer">
-    <footer class="footer bg-dark text-light ">
-        <div class="mt-5 pt-5 pb-5 footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-xs-12 about-company">
-                        <h4>Contribution</h4>
-                        <p class="pr-5 text-white-50">
-                            You feel like hack some lines of Code yourself?<br>
-                            <strong>Pullrequests Welcome!</strong><br>
-                            You would like me to implement an additional feature or you have found a Bug?
-                            <strong>Open a new Issue</strong><br>
-                        </p>
-                        <p><a href="https://github.com/KZellweger/mkmWebClient"><i class="fab fa-github fa-3x"></i></a></p>
-                    </div>
-                    <div class="col-lg-5 col-xs-12 about-company">
-                        <h4>Donation</h4>
-                        <p class="pr-5 text-white-50">
-                            You are extraordinary pleased with the tool?<br>
-                            Consider to buy me Coffee (5$) or a Gin Tonic (10$)<br>
-                        </p>
-                        <p><a href="https://paypal.me/ThankYouKevin"><i class="fab fa-paypal fa-1x"></i></a></p>
-                    </div>
-                </div>
-            </div>
+  <footer class="footer bg-dark text-light ">
+    <div class="mt-5 pt-5 pb-5 footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-5 col-xs-12 about-company">
+            <h4>Contribution</h4>
+            <p class="pr-5 text-white-50">
+              You feel like hack some lines of Code yourself?<br>
+              <strong>Pullrequests Welcome!</strong><br>
+              You would like me to implement an additional feature or you have found a Bug?
+              <strong>Open a new Issue</strong><br>
+            </p>
+            <p><a href="https://github.com/KZellweger/mkmWebClient"><i
+                class="fab fa-github fa-3x"></i></a></p>
+          </div>
+          <div class="col-lg-5 col-xs-12 about-company">
+            <h4>Donation</h4>
+            <p class="pr-5 text-white-50">
+              You are extraordinary pleased with the tool?<br>
+              Consider to buy me Coffee (5$) or a Gin Tonic (10$)<br>
+            </p>
+            <p><a href="https://paypal.me/ThankYouKevin"><i class="fab fa-paypal fa-1x"></i></a></p>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>

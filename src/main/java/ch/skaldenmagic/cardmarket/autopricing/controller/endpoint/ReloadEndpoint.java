@@ -44,13 +44,26 @@ public class ReloadEndpoint {
   @Autowired
   private ExpansionServie expansionService;
 
+  @GetMapping("/products")
+  public void persistProductFile() throws IOException {
+    productService.loadMkmProductlist();
+  }
+
+  @GetMapping("/products/file")
+  @Deprecated
+  public void persistProductFileFromFile() throws IOException {
+    productService.persistProductFile();
+  }
 
   //TODO return DTO
-  @GetMapping("/prices/{name}")
-  public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name)
-      throws IOException {
-    priceService.reloadPricesForUser(name);
-    return priceService.reloadPricesRecommendations(name);
+  @GetMapping("/expansions")
+  public List<ExpansionEntity> reloadExpansions() throws IOException {
+    try {
+      return expansionService.persistExpansions();
+    } catch (Exception e) {
+      log.error(e.getMessage() + Arrays.toString(e.getStackTrace()));
+      return new ArrayList<>();
+    }
   }
 
   @GetMapping("/stock")
@@ -65,27 +78,11 @@ public class ReloadEndpoint {
     return new ArrayList<>();
   }
 
-
-  @GetMapping("/products")
-  public void persistProductFile() throws IOException {
-    productService.loadMkmProductlist();
-  }
-
-  @GetMapping("/products/file")
-  @Deprecated
-  public void persistProductFileFromFile() throws IOException {
-    productService.persistProductFile();
-  }
-
-
   //TODO return DTO
-  @GetMapping("/expansions")
-  public List<ExpansionEntity> reloadExpansions() throws IOException {
-    try {
-      return expansionService.persistExpansions();
-    } catch (Exception e) {
-      log.error(e.getMessage() + Arrays.toString(e.getStackTrace()));
-      return new ArrayList<>();
-    }
+  @GetMapping("/prices/{name}")
+  public List<ArticlePriceEntity> reloadPricesRecommendations(@PathVariable("name") String name)
+      throws IOException {
+    priceService.reloadPricesForUser(name);
+    return priceService.reloadPricesRecommendations(name);
   }
 }

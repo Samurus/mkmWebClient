@@ -45,8 +45,9 @@ public class PriceService {
   public void reloadPricesForUser(String name) throws IOException {
     new RestTemplate().exchange
         (pricerUri + name, HttpMethod.GET,
-            new HttpEntity<ArticlePriceEntity>(createHeaders(pricerUserName, pricerPassword)), String.class
-            );
+            new HttpEntity<ArticlePriceEntity>(createHeaders(pricerUserName, pricerPassword)),
+            String.class
+        );
   }
 
   public List<ArticlePriceEntity> reloadPricesRecommendations(String name) throws IOException {

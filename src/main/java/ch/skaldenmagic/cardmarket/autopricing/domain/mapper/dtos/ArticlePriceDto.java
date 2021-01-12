@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticlePriceDto  {
+public class ArticlePriceDto {
 
   private Integer articleId;
   private BigDecimal recommendedPrice;

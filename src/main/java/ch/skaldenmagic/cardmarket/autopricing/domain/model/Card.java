@@ -69,46 +69,6 @@ public class Card {
   protected Card() {
   }
 
-  private Rarity parseRarity(String rarity) {
-    return Rarity.get(rarity);
-  }
-
-  private Integer parseCount(String count) {
-    return Integer.valueOf(count);
-  }
-
-  private Double parsePrice(String price) {
-    return Double.valueOf(price);
-  }
-
-  private Double parsePrice_trend(String price_trend) {
-    return Double.valueOf(price_trend);
-  }
-
-  public String getSet() {
-    return set;
-  }
-
-  public void setSet(String set) {
-    this.set = set;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public Rarity getRarity() {
-    return rarity;
-  }
-
-  public void setRarity(Rarity rarity) {
-    this.rarity = rarity;
-  }
-
   public int getCount() {
     return count;
   }
@@ -133,11 +93,51 @@ public class Card {
     this.price_trend = price_trend;
   }
 
+  public Rarity getRarity() {
+    return rarity;
+  }
+
+  public void setRarity(Rarity rarity) {
+    this.rarity = rarity;
+  }
+
   public ScryfallCard getScryfallCard() {
     return scryfallCard;
   }
 
   public void setScryfallCard(ScryfallCard scryfallCard) {
     this.scryfallCard = scryfallCard;
+  }
+
+  public String getSet() {
+    return set;
+  }
+
+  public void setSet(String set) {
+    this.set = set;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  private Integer parseCount(String count) {
+    return Integer.valueOf(count);
+  }
+
+  private Double parsePrice(String price) {
+    return Double.valueOf(price);
+  }
+
+  private Double parsePrice_trend(String price_trend) {
+    return Double.valueOf(price_trend);
+  }
+
+  private Rarity parseRarity(String rarity) {
+    return Rarity.get(rarity);
   }
 }

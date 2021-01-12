@@ -49,6 +49,10 @@ public class ProductService {
   @Autowired
   private ArticleService articleService;
 
+  public void deleteAll() {
+    productRepository.deleteAll();
+  }
+
   /**
    * Load all Stored Products by Expansion
    *
@@ -59,8 +63,66 @@ public class ProductService {
     return productRepository.findAllByExpansionId(expansionId);
   }
 
-  List<ProductEntity> findByProductIdInList(List<Integer> productIds) {
-    return productRepository.findByProductIdInList(productIds);
+  public List<ProductEntity> findAllByExpansionName(String name) {
+    return productRepository.findAllByExpansionNameContaining(name);
+  }
+
+  public List<String> findAllExpansionNames() {
+    int magicSingleCode = 1;
+    return productRepository.findExpansionNamesDistinctByCategoryId(magicSingleCode).stream()
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  public Optional<ProductEntity> findByNameAndExpansion(String name, Long expansionId) {
+    return Optional.ofNullable(productRepository.findByNameAndExpansionId(name, expansionId));
+  }
+
+  public List<ProductEntity> getFromSorterData(List<Card> sorterCards) {
+    List<ProductEntity> obviousProducts = new ArrayList<>();
+    List<ProductEntity> ambiguousProducts = new ArrayList<>();
+    List<Card> unknownProducts = new ArrayList<>();
+
+    for (Card c : sorterCards) {
+      ExpansionEntity expansion = expansionService.getByCode(c.getSet());
+      if (expansion != null) {
+        Optional<ProductEntity> product = findByNameAndExpansion(c.getTitle(), expansion.getId());
+        if (product.isPresent()) {
+          obviousProducts.add(product.get());
+        } else {
+          unknownProducts.add(c);
+        }
+      } else {
+        List<ProductEntity> possibleProducts = findAllByName(c.getTitle());
+        if (!possibleProducts.isEmpty()) {
+          ambiguousProducts.addAll(possibleProducts);
+        } else {
+          unknownProducts.add(c);
+        }
+      }
+    }
+    return obviousProducts;
+  }
+
+  public void initProductDatabase() {
+    try {
+      expansionService.updateExpansionDB();
+      List<ExpansionEntity> expansions = expansionService.findAll();
+
+      List<ProductEntity> mkmProducts = new ArrayList<>();
+      for (ExpansionEntity expansion : expansions) {
+        Set<Product> apiRes = mkmService.getCardMarket().getMarketplaceService()
+            .getExpansionSingles(expansion.getExpansionId());
+        for (Product p : apiRes) {
+          ProductEntity e = productMapper.mkmToEntity(p);
+          e.setExpansion(expansion);
+          mkmProducts.add(e);
+        }
+      }
+      productRepository.saveAll(mkmProducts);
+    } catch (IOException e) {
+      //Todo handle exeptions correctly
+    }
   }
 
   /**
@@ -105,18 +167,12 @@ public class ProductService {
     return updateAllProducts(productEntities);
   }
 
-  private List<ProductEntity> updateAllProducts(List<ProductEntity> productEntities) {
-    Map<Integer, ProductEntity> existingProducts = productRepository.findAll().stream()
-        .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
+  public ProductEntity saveNewProduct(ProductEntity product) {
+    return productRepository.save(product);
+  }
 
-    productEntities.forEach(newProduct -> {
-      ProductEntity existingProduct = existingProducts.get(newProduct.getProductId());
-      if (null != existingProduct) {
-        productMapper.updateSecondWithFirst(existingProduct, newProduct);
-      }
-    });
-
-    return productRepository.saveAll(productEntities);
+  private List<ProductEntity> findAllByName(String name) {
+    return productRepository.findAllByName(name);
   }
 
   private LocalDate getMostRecentDate() {
@@ -157,77 +213,21 @@ public class ProductService {
     return entity;
   }
 
-  public ProductEntity saveNewProduct(ProductEntity product) {
-    return productRepository.save(product);
-  }
+  private List<ProductEntity> updateAllProducts(List<ProductEntity> productEntities) {
+    Map<Integer, ProductEntity> existingProducts = productRepository.findAll().stream()
+        .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
 
-  public List<ProductEntity> findAllByExpansionName(String name) {
-    return productRepository.findAllByExpansionNameContaining(name);
-  }
-
-  public List<String> findAllExpansionNames() {
-    int magicSingleCode = 1;
-    return productRepository.findExpansionNamesDistinctByCategoryId(magicSingleCode).stream()
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
-  }
-
-  public List<ProductEntity> getFromSorterData(List<Card> sorterCards) {
-    List<ProductEntity> obviousProducts = new ArrayList<>();
-    List<ProductEntity> ambiguousProducts = new ArrayList<>();
-    List<Card> unknownProducts = new ArrayList<>();
-
-    for (Card c : sorterCards) {
-      ExpansionEntity expansion = expansionService.getByCode(c.getSet());
-      if (expansion != null) {
-        Optional<ProductEntity> product = findByNameAndExpansion(c.getTitle(), expansion.getId());
-        if (product.isPresent()) {
-          obviousProducts.add(product.get());
-        } else {
-          unknownProducts.add(c);
-        }
-      } else {
-        List<ProductEntity> possibleProducts = findAllByName(c.getTitle());
-        if (!possibleProducts.isEmpty()) {
-          ambiguousProducts.addAll(possibleProducts);
-        } else {
-          unknownProducts.add(c);
-        }
+    productEntities.forEach(newProduct -> {
+      ProductEntity existingProduct = existingProducts.get(newProduct.getProductId());
+      if (null != existingProduct) {
+        productMapper.updateSecondWithFirst(existingProduct, newProduct);
       }
-    }
-    return obviousProducts;
+    });
+
+    return productRepository.saveAll(productEntities);
   }
 
-  public Optional<ProductEntity> findByNameAndExpansion(String name, Long expansionId) {
-    return Optional.ofNullable(productRepository.findByNameAndExpansionId(name, expansionId));
-  }
-
-  private List<ProductEntity> findAllByName(String name) {
-    return productRepository.findAllByName(name);
-  }
-
-  public void deleteAll() {
-    productRepository.deleteAll();
-  }
-
-  public void initProductDatabase() {
-    try {
-      expansionService.updateExpansionDB();
-      List<ExpansionEntity> expansions = expansionService.findAll();
-
-      List<ProductEntity> mkmProducts = new ArrayList<>();
-      for (ExpansionEntity expansion : expansions) {
-        Set<Product> apiRes = mkmService.getCardMarket().getMarketplaceService()
-            .getExpansionSingles(expansion.getExpansionId());
-        for (Product p : apiRes) {
-          ProductEntity e = productMapper.mkmToEntity(p);
-          e.setExpansion(expansion);
-          mkmProducts.add(e);
-        }
-      }
-      productRepository.saveAll(mkmProducts);
-    } catch (IOException e) {
-      //Todo handle exeptions correctly
-    }
+  List<ProductEntity> findByProductIdInList(List<Integer> productIds) {
+    return productRepository.findByProductIdInList(productIds);
   }
 }

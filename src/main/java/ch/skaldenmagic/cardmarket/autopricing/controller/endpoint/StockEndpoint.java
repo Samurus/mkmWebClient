@@ -34,30 +34,6 @@ public class StockEndpoint {
   @Autowired
   private ExpansionServie expansionService;
 
-  @GetMapping("/articles")
-  public List<ArticleDto> loadMyStock() {
-    List<ArticleEntity> articles = articleService.findAll();
-    return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
-  }
-
-  @PostMapping("/articles")
-  public List<ArticleDto> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
-      throws IOException {
-    return articleService.updateAll(articleDtos).stream().map(articleMapper::entityToDto).collect(Collectors.toList());
-  }
-
-  @GetMapping("/articles/min-price")
-  public List<ArticleDto> loadStockWithMinPrice() {
-    return articleService.findAllWithMinPrice();
-  }
-
-  //TODO return DTO
-  @GetMapping("/expansion/{name}")
-  public List<ExpansionEntity> findExpansionsByName(@PathVariable("name") String name)
-      throws IOException {
-    return expansionService.findAllByNameContaining(name);
-  }
-
   //FIXME
   @GetMapping("/articles/expansion/{id}")
   public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(
@@ -69,6 +45,31 @@ public class StockEndpoint {
   public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansionName(
       @PathVariable("name") String name) throws IOException {
     return articleService.findAllArticlesWithCheapestPriceByExpansion(name);
+  }
+
+  //TODO return DTO
+  @GetMapping("/expansion/{name}")
+  public List<ExpansionEntity> findExpansionsByName(@PathVariable("name") String name)
+      throws IOException {
+    return expansionService.findAllByNameContaining(name);
+  }
+
+  @GetMapping("/articles")
+  public List<ArticleDto> loadMyStock() {
+    List<ArticleEntity> articles = articleService.findAll();
+    return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
+  }
+
+  @GetMapping("/articles/min-price")
+  public List<ArticleDto> loadStockWithMinPrice() {
+    return articleService.findAllWithMinPrice();
+  }
+
+  @PostMapping("/articles")
+  public List<ArticleDto> updateMyStock(@RequestBody List<ArticleDto> articleDtos)
+      throws IOException {
+    return articleService.updateAll(articleDtos).stream().map(articleMapper::entityToDto)
+        .collect(Collectors.toList());
   }
 
 }

@@ -53,8 +53,9 @@ public class BankAccount {
     }
     if (registeredOwner == null) {
       return other.registeredOwner == null;
-    } else
+    } else {
       return registeredOwner.equals(other.registeredOwner);
+    }
   }
 
   public String getBankName() {

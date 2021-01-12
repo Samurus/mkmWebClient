@@ -1,12 +1,7 @@
 package de.cardmarket4j.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-
 import de.cardmarket4j.AbstractService;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Order;
@@ -14,6 +9,9 @@ import de.cardmarket4j.entity.enumeration.HTTPMethod;
 import de.cardmarket4j.entity.enumeration.OrderState;
 import de.cardmarket4j.entity.enumeration.OrderType;
 import de.cardmarket4j.util.JsonIO;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * OrderServices provides a connection to several order related functions on cardmarket. TODO Add

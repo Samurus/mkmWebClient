@@ -13,12 +13,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ArticlePriceMapper {
 
-  ArticlePriceDto toDto(ArticlePriceEntity entity);
-
   @AfterMapping
-  default void calculatePriceDifference(ArticlePriceEntity order, @MappingTarget ArticlePriceDto dto) {
+  default void calculatePriceDifference(ArticlePriceEntity order,
+      @MappingTarget ArticlePriceDto dto) {
     dto.setPriceDifference(order.getPrice().subtract(order.getRecommendedPrice()));
   }
+
+  ArticlePriceDto toDto(ArticlePriceEntity entity);
 
 
 }

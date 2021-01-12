@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * Service to handle known Articles from the own MKM-Stock
+ *
  * @author Kevin Zellweger
  * @Date 03.07.20
  */
@@ -51,86 +53,25 @@ public class ArticleService {
   @Autowired
   private ProductMapper productMapper;
 
-  public List<ArticleEntity> reloadStockFromMkm() throws IOException {
-    articleRepository.deleteAll();
-    List<Article> stock = mkmService.getCardMarket().getStockService().getStock();
-    log.info("Requests used today: " + mkmService.getCardMarket().getRequestCount());
-    List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::mkmToEntity)
-        .collect(Collectors.toList());
-
-    return updateArticleStock(stockEntities);
+  public List<ArticleEntity> findAll() {
+    return articleRepository.findAll();
   }
 
-  private List<ArticleEntity> updateArticleStock(List<ArticleEntity> stockEntities) {
-    Map<Integer, ProductEntity> existingProducts = productService
-        .findByProductIdInList(stockEntities.stream()
-            .map(product -> product.getProduct().getProductId())
-            .collect(Collectors.toList())).stream()
-        .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
-
-    stockEntities.forEach(articleEntity -> {
-      ProductEntity existingProduct = existingProducts
-          .get(articleEntity.getProduct().getProductId());
-
-      if (null == existingProduct) {
-        //TODO improvement: first determine all new ones and create in bulk
-        existingProduct = productService.saveNewProduct(articleEntity.getProduct());
-      } else {
-        productMapper.updateSecondWithFirst(articleEntity.getProduct(), existingProduct);
-        existingProduct = productService.saveNewProduct(existingProduct);
-      }
-      existingProducts.put(existingProduct.getProductId(), existingProduct);
-      articleEntity.setProduct(existingProduct);
-    });
-    return articleRepository.saveAll(stockEntities);
-  }
-
-
-  public List<ArticleEntity> updateAll(List<ArticleDto> articleDtos) throws IOException {
-    List<CardMarketArticle> entities = articleDtos.stream().map(articleMapper::dtoToMkm)
+  public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(String name)
+      throws IOException {
+    List<ProductEntity> productsByExpansionId = productService.findAllByExpansionName(name);
+    List<Integer> productIds = productsByExpansionId.stream().map(ProductEntity::getProductId)
         .collect(Collectors.toList());
-    List<Article> articles = mkmService.getCardMarket().getStockService()
-        .editListArticles(entities);
-    List<ArticleEntity> articleEntities = articles.stream().map(articleMapper::mkmToEntity)
+    List<ArticleEntity> byProductIds = articleRepository.findByProductIds(productIds);
+
+    List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::entityToDto)
         .collect(Collectors.toList());
 
-    List<Integer> collect = articleEntities.stream().map(ArticleEntity::getArticleId)
-        .collect(Collectors.toList());
-    List<ArticleEntity> byArticleIds = articleRepository.findByArticleIds(collect);
-    articleRepository.deleteInBatch(byArticleIds);
-
-    List<ArticlePriceEntity> pricesByArticleIds = priceRepository.findByArticleIds(collect);
-    priceRepository.deleteInBatch(pricesByArticleIds);
-
-    return updateArticleStock(articleEntities);
-  }
-
-  public List<ArticleDto> findAllWithMinPrice() {
-    //TODO optimization with Databasequeries or Entities with oneToMany
-    List<ArticleEntity> articles = articleRepository.findAll();
-    List<ArticleDto> articleDtos = articles.stream().map(articleMapper::entityToDto)
-        .collect(Collectors.toList());
     List<ArticlePriceEntity> byArticleId = priceRepository.findAll();
     Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream()
         .collect(groupingBy(ArticlePriceEntity::getArticleId));
 
     List<ArticleDto> allWithPrices = getArticleDtosWithCheapestPrice(articleDtos, prices);
-    return allWithPrices;
-  }
-
-  private List<ArticleDto> getArticleDtosWithCheapestPrice(List<ArticleDto> articleDtos,
-      Map<Integer, List<ArticlePriceEntity>> prices) {
-    List<ArticleDto> allWithPrices = new ArrayList<>();
-    articleDtos.forEach(articleEntity -> {
-      if (null != prices.get(articleEntity.getArticleId())) {
-        ArticlePriceEntity cheapestPrice = prices.get(articleEntity.getArticleId()).stream()
-            .min(Comparator.comparing(ArticlePriceEntity::getPrice))
-            .orElseThrow(NoSuchElementException::new);
-        articleEntity.setArticlePriceEntity(articlePriceMapper.toDto(cheapestPrice));
-        articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
-      }
-      allWithPrices.add(articleEntity);
-    });
     return allWithPrices;
   }
 
@@ -160,16 +101,11 @@ public class ArticleService {
     return allArticlesWithCheapestPriceByExpansion;
   }
 
-  public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansion(String name)
-      throws IOException {
-    List<ProductEntity> productsByExpansionId = productService.findAllByExpansionName(name);
-    List<Integer> productIds = productsByExpansionId.stream().map(ProductEntity::getProductId)
+  public List<ArticleDto> findAllWithMinPrice() {
+    //TODO optimization with Databasequeries or Entities with oneToMany
+    List<ArticleEntity> articles = articleRepository.findAll();
+    List<ArticleDto> articleDtos = articles.stream().map(articleMapper::entityToDto)
         .collect(Collectors.toList());
-    List<ArticleEntity> byProductIds = articleRepository.findByProductIds(productIds);
-
-    List<ArticleDto> articleDtos = byProductIds.stream().map(articleMapper::entityToDto)
-        .collect(Collectors.toList());
-
     List<ArticlePriceEntity> byArticleId = priceRepository.findAll();
     Map<Integer, List<ArticlePriceEntity>> prices = byArticleId.stream()
         .collect(groupingBy(ArticlePriceEntity::getArticleId));
@@ -178,8 +114,73 @@ public class ArticleService {
     return allWithPrices;
   }
 
-  public List<ArticleEntity> findAll() {
-    return articleRepository.findAll();
+  public List<ArticleEntity> reloadStockFromMkm() throws IOException {
+    articleRepository.deleteAll();
+    List<Article> stock = mkmService.getCardMarket().getStockService().getStock();
+    log.info("Requests used today: " + mkmService.getCardMarket().getRequestCount());
+    List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::mkmToEntity)
+        .collect(Collectors.toList());
+
+    return updateArticleStock(stockEntities);
+  }
+
+  public List<ArticleEntity> updateAll(List<ArticleDto> articleDtos) throws IOException {
+    List<CardMarketArticle> entities = articleDtos.stream().map(articleMapper::dtoToMkm)
+        .collect(Collectors.toList());
+    List<Article> articles = mkmService.getCardMarket().getStockService()
+        .editListArticles(entities);
+    List<ArticleEntity> articleEntities = articles.stream().map(articleMapper::mkmToEntity)
+        .collect(Collectors.toList());
+
+    List<Integer> collect = articleEntities.stream().map(ArticleEntity::getArticleId)
+        .collect(Collectors.toList());
+    List<ArticleEntity> byArticleIds = articleRepository.findByArticleIds(collect);
+    articleRepository.deleteInBatch(byArticleIds);
+
+    List<ArticlePriceEntity> pricesByArticleIds = priceRepository.findByArticleIds(collect);
+    priceRepository.deleteInBatch(pricesByArticleIds);
+
+    return updateArticleStock(articleEntities);
+  }
+
+  private List<ArticleDto> getArticleDtosWithCheapestPrice(List<ArticleDto> articleDtos,
+      Map<Integer, List<ArticlePriceEntity>> prices) {
+    List<ArticleDto> allWithPrices = new ArrayList<>();
+    articleDtos.forEach(articleEntity -> {
+      if (null != prices.get(articleEntity.getArticleId())) {
+        ArticlePriceEntity cheapestPrice = prices.get(articleEntity.getArticleId()).stream()
+            .min(Comparator.comparing(ArticlePriceEntity::getPrice))
+            .orElseThrow(NoSuchElementException::new);
+        articleEntity.setArticlePriceEntity(articlePriceMapper.toDto(cheapestPrice));
+        articleEntity.setPrice(cheapestPrice.getRecommendedPrice());
+      }
+      allWithPrices.add(articleEntity);
+    });
+    return allWithPrices;
+  }
+
+  private List<ArticleEntity> updateArticleStock(List<ArticleEntity> stockEntities) {
+    Map<Integer, ProductEntity> existingProducts = productService
+        .findByProductIdInList(stockEntities.stream()
+            .map(product -> product.getProduct().getProductId())
+            .collect(Collectors.toList())).stream()
+        .collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
+
+    stockEntities.forEach(articleEntity -> {
+      ProductEntity existingProduct = existingProducts
+          .get(articleEntity.getProduct().getProductId());
+
+      if (null == existingProduct) {
+        //TODO improvement: first determine all new ones and create in bulk
+        existingProduct = productService.saveNewProduct(articleEntity.getProduct());
+      } else {
+        productMapper.updateSecondWithFirst(articleEntity.getProduct(), existingProduct);
+        existingProduct = productService.saveNewProduct(existingProduct);
+      }
+      existingProducts.put(existingProduct.getProductId(), existingProduct);
+      articleEntity.setProduct(existingProduct);
+    });
+    return articleRepository.saveAll(stockEntities);
   }
 
 }

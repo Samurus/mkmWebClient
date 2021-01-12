@@ -29,20 +29,29 @@ public class ExpansionServie {
   @Autowired
   private ExpansionRepository expansionRepository;
 
-  public ExpansionEntity getByExpansionId(Integer expansionId) {
-    return expansionRepository.getByExpansionId(expansionId);
-  }
-
-  public ExpansionEntity getByCode(String expansionCode) {
-    return expansionRepository.findByCode(expansionCode);
+  public List<ExpansionEntity> findAll() {
+    return expansionRepository.findAll();
   }
 
   public List<ExpansionEntity> findAllByNameContaining(String expansionName) {
     return expansionRepository.findAllByNameContaining(expansionName);
   }
 
-  public List<ExpansionEntity> findAll() {
-    return expansionRepository.findAll();
+  public ExpansionEntity getByCode(String expansionCode) {
+    return expansionRepository.findByCode(expansionCode);
+  }
+
+  public ExpansionEntity getByExpansionId(Integer expansionId) {
+    return expansionRepository.getByExpansionId(expansionId);
+  }
+
+  public List<ExpansionEntity> persistExpansions() throws IOException {
+
+    Set<Expansion> expansions = mkmService.getCardMarket().getMarketplaceService()
+        .getExpansions(new ProductFilter("?"));
+    List<ExpansionEntity> entities = expansions.stream().map(expansionMapper::mkmToEntity)
+        .collect(Collectors.toList());
+    return expansionRepository.saveAll(entities);
   }
 
   public List<ExpansionEntity> updateExpansionDB() throws IOException {
@@ -52,15 +61,6 @@ public class ExpansionServie {
         .collect(Collectors.toList());
     List<ExpansionEntity> existingEntities = findAll();
     entities.removeAll(existingEntities);
-    return expansionRepository.saveAll(entities);
-  }
-
-  public List<ExpansionEntity> persistExpansions() throws IOException {
-
-    Set<Expansion> expansions = mkmService.getCardMarket().getMarketplaceService()
-        .getExpansions(new ProductFilter("?"));
-    List<ExpansionEntity> entities = expansions.stream().map(expansionMapper::mkmToEntity)
-        .collect(Collectors.toList());
     return expansionRepository.saveAll(entities);
   }
 

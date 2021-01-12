@@ -31,16 +31,16 @@ public enum DeliverySpeed {
     throw new IllegalArgumentException("Couldn't find an enum matching this value: " + value);
   }
 
+  @Override
+  public String toString() {
+    return displayValue;
+  }
+
   private String getDisplayValue() {
     return displayValue;
   }
 
   private int getId() {
     return id;
-  }
-
-  @Override
-  public String toString() {
-    return displayValue;
   }
 }

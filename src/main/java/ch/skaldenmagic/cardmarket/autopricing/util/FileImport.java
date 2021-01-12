@@ -19,19 +19,6 @@ import org.h2.util.IOUtils;
 
 public class FileImport {
 
-  private static String readFromInputStream(InputStream inputStream)
-      throws IOException {
-    StringBuilder resultStringBuilder = new StringBuilder();
-    try (BufferedReader br
-        = new BufferedReader(new InputStreamReader(inputStream))) {
-      String line;
-      while ((line = br.readLine()) != null) {
-        resultStringBuilder.append(line).append("\n");
-      }
-    }
-    return resultStringBuilder.toString();
-  }
-
   private static byte[] decompress(byte[] contentBytes) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
@@ -40,6 +27,10 @@ public class FileImport {
       throw new RuntimeException(e);
     }
     return out.toByteArray();
+  }
+
+  public static byte[] decompressBase64(InputStream inputStream) throws IOException {
+    return decompress(Base64.decodeBase64(readFromInputStream(inputStream)));
   }
 
   public static byte[] getPriceGuideFile(InputStream resourceAsStream) throws IOException {
@@ -58,8 +49,17 @@ public class FileImport {
                 .get("productsfile").toString()));
   }
 
-  public static byte[] decompressBase64(InputStream inputStream) throws IOException {
-    return decompress(Base64.decodeBase64(readFromInputStream(inputStream)));
+  private static String readFromInputStream(InputStream inputStream)
+      throws IOException {
+    StringBuilder resultStringBuilder = new StringBuilder();
+    try (BufferedReader br
+        = new BufferedReader(new InputStreamReader(inputStream))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        resultStringBuilder.append(line).append("\n");
+      }
+    }
+    return resultStringBuilder.toString();
   }
 
   public static List<ProductEntity> readSorterProductCSV(String fileName) throws IOException {

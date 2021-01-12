@@ -12,6 +12,14 @@ public class PricerConfig {
   private String user;
   private String password;
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
   public String getUri() {
     return uri;
   }
@@ -26,14 +34,6 @@ public class PricerConfig {
 
   public void setUser(String user) {
     this.user = user;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 }
 

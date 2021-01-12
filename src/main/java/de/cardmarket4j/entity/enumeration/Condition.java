@@ -35,16 +35,16 @@ public enum Condition {
     throw new IllegalArgumentException("Couldn't find an enum matching this value: " + value);
   }
 
-  private String getDisplayValue() {
-    return displayValue;
-  }
-
   public String getId() {
     return id;
   }
 
   @Override
   public String toString() {
+    return displayValue;
+  }
+
+  private String getDisplayValue() {
     return displayValue;
   }
 }

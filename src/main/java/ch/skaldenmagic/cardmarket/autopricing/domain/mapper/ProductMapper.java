@@ -18,12 +18,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
     ExpansionMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ProductMapper {
 
+  ProductDto dtoToMkm(Product product);
+
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "version", ignore = true)
   ProductEntity mkmToEntity(Product product);
-
-  ProductDto dtoToMkm(Product product);
-
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   void updateSecondWithFirst(ProductEntity source, @MappingTarget ProductEntity target);

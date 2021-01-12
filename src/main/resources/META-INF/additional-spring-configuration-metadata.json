@@ -4,7 +4,7 @@
       "name": "mkm.appToken",
       "type": "java.lang.String",
       "description": "App Token for mkm API."
-  },
+    },
     {
       "name": "mkm.appSecret",
       "type": "java.lang.String",
@@ -35,4 +35,5 @@
       "type": "java.lang.String",
       "description": "Password for Pricer Mikroservice."
     }
-  ] }
+  ]
+}
