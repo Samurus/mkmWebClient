@@ -3,7 +3,6 @@ package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.LocalizationEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
-import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.LocalizationMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ProductMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
@@ -44,22 +43,25 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
   private static final Logger log = LoggerFactory.getLogger(ProductService.class);
+  private final ProductMapper productMapper;
+  private final LocalizationMapper localizationMapper;
+  private final ProductRepository productRepository;
+  private final MkmService mkmService;
+  private final ExpansionServie expansionService;
+
   @Autowired
-  private ArticleMapper articleMapper;
-  @Autowired
-  private ProductMapper productMapper;
-  @Autowired
-  private LocalizationMapper localizationMapper;
-  @Autowired
-  private ProductRepository productRepository;
-  @Autowired
-  private MkmService mkmService;
-  @Autowired
-  private ExpansionServie expansionService;
-  @Autowired
-  private ArticleService articleService;
-  @Autowired
-  private LocalizationService localizationService;
+  public ProductService(
+      ProductMapper productMapper,
+      LocalizationMapper localizationMapper,
+      ProductRepository productRepository,
+      MkmService mkmService,
+      ExpansionServie expansionService) {
+    this.productMapper = productMapper;
+    this.localizationMapper = localizationMapper;
+    this.productRepository = productRepository;
+    this.mkmService = mkmService;
+    this.expansionService = expansionService;
+  }
 
   public void deleteAll() {
     productRepository.deleteAll();
@@ -88,6 +90,17 @@ public class ProductService {
 
   public Optional<ProductEntity> findByNameAndExpansion(String name, Long expansionId) {
     return Optional.ofNullable(productRepository.findByNameAndExpansionId(name, expansionId));
+  }
+
+  /**
+   * Find Product by MKM-ProductId
+   *
+   * @param productId MKM-ProductID
+   * @return ProductEntity
+   */
+
+  public Optional<ProductEntity> findByProductId(Integer productId) {
+    return Optional.ofNullable(productRepository.findByProductId(productId));
   }
 
   public List<ArticleDto> getFromSorterData(List<Card> sorterCards) {

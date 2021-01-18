@@ -19,6 +19,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
   //  @Query(value = "SELECT p from product p WHERE name =:name AND expansion_id = :expansionId")
   ProductEntity findByNameAndExpansionId(String name, Long expansionId);
 
+  ProductEntity findByProductId(Integer productId);
+
   @Query(value = "select p from ProductEntity p where product_id in :productIdList")
   List<ProductEntity> findByProductIdInList(List<Integer> productIdList);
 

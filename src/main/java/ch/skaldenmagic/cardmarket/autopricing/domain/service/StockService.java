@@ -1,6 +1,7 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ArticleEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
@@ -30,13 +31,15 @@ public class StockService {
   private final MkmService mkmService;
   private final ArticleService articleService;
   private final ArticleMapper articleMapper;
+  private final ProductService productService;
 
   @Autowired
   public StockService(MkmService mkmService, ArticleMapper articleMapper,
-      ArticleService articleService) {
+      ArticleService articleService, ProductService productService) {
     this.mkmService = mkmService;
     this.articleService = articleService;
     this.articleMapper = articleMapper;
+    this.productService = productService;
   }
 
   /**
@@ -81,6 +84,15 @@ public class StockService {
     if (last < size) {
       postedArticles.addAll(insertArticleList(articlesToPost, last, size));
     }
+
+    for (ArticleEntity articleEntity : postedArticles) {
+      ProductEntity productEntity = productService
+          .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
+              () -> new MkmAPIException(ProductService.class, "findProductByID()")
+          );
+      articleEntity.setProduct(productEntity);
+    }
+
     return articleService.saveAll(postedArticles);
   }
 
