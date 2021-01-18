@@ -25,7 +25,7 @@ import lombok.Setter;
 @Table(name = "article")
 public class ArticleEntity extends BaseEntity {
 
-  private int articleId;
+  private Integer articleId;
   //private Integer productId;
   //can be represented within the ProductEntity and is redundant
   @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -75,5 +75,21 @@ public class ArticleEntity extends BaseEntity {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), articleId);
+  }
+
+  public ArticleEntity updateSelf(ArticleEntity entity) {
+    this.languageCode = entity.getLanguageCode();
+    this.comment = entity.getComment();
+    this.price = entity.price;
+    this.quantity = entity.quantity;
+    this.inShoppingCart = entity.isInShoppingCart();
+    this.lastEdited = entity.getLastEdited();
+    this.condition = entity.getCondition();
+    this.foil = entity.isFoil();
+    this.signed = entity.isSigned();
+    this.altered = entity.isAltered();
+    this.playset = entity.isPlayset();
+    this.firstEdition = entity.isFirstEdition();
+    return this;
   }
 }

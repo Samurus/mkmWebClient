@@ -198,6 +198,9 @@ public class ProductService {
   }
 
   private ArticleDto defaultArticleDTO(Card c, ProductDto productDto) {
+    if (c.getPrice() < 0.02) {
+      c.setPrice(0.02); //Respect Cardmarkets minimum Price
+    }
     return new ArticleDto(null, LanguageCode.en, "Added By Sorter",
         BigDecimal.valueOf(c.getPrice()), c.getCount(), false, productDto, null,
         LocalDateTime.now(), Condition.NEAR_MINT, false, false, false, false, false, null);

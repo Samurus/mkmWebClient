@@ -38,20 +38,31 @@ import org.springframework.stereotype.Service;
 public class ArticleService {
 
   private static final Logger log = LoggerFactory.getLogger(ArticleService.class);
+  private final ArticlePriceMapper articlePriceMapper;
+  private final MkmService mkmService;
+  private final ArticleRepository articleRepository;
+  private final PriceRepository priceRepository;
+  private final ArticleMapper articleMapper;
+  private final ProductService productService;
+  private final ProductMapper productMapper;
+
   @Autowired
-  ArticlePriceMapper articlePriceMapper;
-  @Autowired
-  private MkmService mkmService;
-  @Autowired
-  private ArticleRepository articleRepository;
-  @Autowired
-  private PriceRepository priceRepository;
-  @Autowired
-  private ArticleMapper articleMapper;
-  @Autowired
-  private ProductService productService;
-  @Autowired
-  private ProductMapper productMapper;
+  public ArticleService(
+      ArticlePriceMapper articlePriceMapper,
+      MkmService mkmService,
+      ArticleRepository articleRepository,
+      PriceRepository priceRepository,
+      ArticleMapper articleMapper,
+      ProductService productService,
+      ProductMapper productMapper) {
+    this.articlePriceMapper = articlePriceMapper;
+    this.mkmService = mkmService;
+    this.articleRepository = articleRepository;
+    this.priceRepository = priceRepository;
+    this.articleMapper = articleMapper;
+    this.productService = productService;
+    this.productMapper = productMapper;
+  }
 
   public List<ArticleEntity> findAll() {
     return articleRepository.findAll();
@@ -132,6 +143,45 @@ public class ArticleService {
         .collect(Collectors.toList());
 
     return updateArticleStock(stockEntities);
+  }
+
+  public List<ArticleDto> saveAll(List<ArticleEntity> articleEntities) {
+    return articleRepository.saveAll(articleEntities).stream().map(articleMapper::entityToDto)
+        .collect(
+            Collectors.toList());
+  }
+
+  /**
+   * Persist the whole MKM-Stock in local Database. This call might take a while, because we have to
+   * check if the User might added Articles directly in MKM which are not known in the Database
+   * yet.
+   *
+   * @param stock Result of the getStockRequest
+   * @return containing all Articles
+   */
+  public List<ArticleDto> saveOrUpdate(List<Article> stock) {
+    List<ArticleEntity> toUpdate = new ArrayList<>();
+    List<ArticleEntity> toSave = new ArrayList<>();
+    List<ArticleEntity> fromStock = stock.stream()
+        .map(articleMapper::mkmToEntity).collect(Collectors.toList());
+
+    fromStock.forEach(article -> {
+      ArticleEntity articleEntity = articleRepository.findByArticleId(article.getArticleId());
+      if (articleEntity == null) {
+        // article locally not known
+        toSave.add(article);
+      } else {
+        // article locally known but might have changed some Properties.
+        toUpdate.add(articleEntity.updateSelf(article));
+      }
+    });
+    List<ArticleDto> result = articleRepository.saveAll(toSave).stream()
+        .map(articleMapper::entityToDto).collect(
+            Collectors.toList());
+    result.addAll(
+        articleRepository.saveAll(toUpdate).stream().map(articleMapper::entityToDto).collect(
+            Collectors.toList()));
+    return result;
   }
 
   public List<ArticleEntity> updateAll(List<ArticleDto> articleDtos) throws IOException {

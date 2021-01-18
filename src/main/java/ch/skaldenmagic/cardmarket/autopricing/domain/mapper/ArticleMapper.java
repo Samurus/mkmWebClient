@@ -15,6 +15,7 @@ public interface ArticleMapper {
 
   @Mapping(target = "inShoppingCart", ignore = true)
   @Mapping(target = "product", ignore = true)
+  @Mapping(target = "productId", source = "product.productId")
   @Mapping(target = "seller", ignore = true)
   @Mapping(target = "lastEdited", ignore = true)
   @Mapping(target = "firstEdition", ignore = true)

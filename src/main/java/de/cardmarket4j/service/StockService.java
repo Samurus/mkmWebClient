@@ -213,6 +213,7 @@ public class StockService extends AbstractService {
     xml.append("</request>");
     JsonElement response = request("stock", HTTPMethod.POST, xml.toString());
     // TODO: might be nice if failed requests would throw a runtime exception with the error message
+    // TODO: not only might be nice but mandatory. We want to know why something failed.
     List<Article> listArticle = new ArrayList<>();
     for (JsonElement jElement : response.getAsJsonObject().get("inserted").getAsJsonArray()) {
       listArticle.add(
