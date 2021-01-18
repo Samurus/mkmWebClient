@@ -216,8 +216,14 @@ public class StockService extends AbstractService {
     // TODO: not only might be nice but mandatory. We want to know why something failed.
     List<Article> listArticle = new ArrayList<>();
     for (JsonElement jElement : response.getAsJsonObject().get("inserted").getAsJsonArray()) {
-      listArticle.add(
-          JsonIO.getGson().fromJson(jElement.getAsJsonObject().get("idArticle"), Article.class));
+      if (jElement.getAsJsonObject().get("success").getAsBoolean()) {
+        listArticle.add(
+            JsonIO.getGson().fromJson(jElement.getAsJsonObject().get("idArticle"), Article.class));
+      } else {
+        LOGGER.error("Failed to add Article {} because {}",
+            jElement.getAsJsonObject().get("tried"),
+            jElement.getAsJsonObject().get("error"));
+      }
     }
     return listArticle;
   }
