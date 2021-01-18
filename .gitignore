@@ -34,3 +34,6 @@ uploads/
 
 ### VS Code ###
 .vscode/
+
+### Logs ###
+logs/
