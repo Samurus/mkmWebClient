@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>MKM Webclient</title>
-    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.5.0/css/bootstrap.min.css} "/>
-    <link th:rel="stylesheet" th:href="@{webjars/font-awesome/5.13.0/css/all.css} "/>
+  <meta charset="UTF-8">
+  <title>MKM Webclient</title>
+  <link th:href="@{webjars/bootstrap/4.5.0/css/bootstrap.min.css} " th:rel="stylesheet"/>
+  <link th:href="@{webjars/font-awesome/5.13.0/css/all.css} " th:rel="stylesheet"/>
 
 </head>
 <body>
@@ -13,17 +13,18 @@
 <div th:insert="fragments/fragments.html :: header"></div>
 <!-- CardForm -->
 <div class="container">
-    <form method="post" th:object="${card}">
-        <div class="form-group row">
-            <div class="col-md-4 mt-5">
-                <label for="cardName">Card</label>
-                <div class="input-group text">
-                    <input type="text" class="form-control" id="cardName" autocomplete="off" th:field="*{title}">
-                </div>
-            </div>
+  <form method="post" th:object="${card}">
+    <div class="form-group row">
+      <div class="col-md-4 mt-5">
+        <label for="cardName">Card</label>
+        <div class="input-group text">
+          <input autocomplete="off" class="form-control" id="cardName" th:field="*{title}"
+                 type="text">
         </div>
-        <button class="btn btn-primary" type="submit">Submit form</button>
-    </form>
+      </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit form</button>
+  </form>
 </div>
 
 <div th:insert="fragments/fragments.html :: footer"></div>
