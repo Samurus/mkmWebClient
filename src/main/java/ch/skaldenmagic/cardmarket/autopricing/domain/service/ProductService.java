@@ -122,15 +122,6 @@ public class ProductService {
         } else {
           unknown.setQuantity(unknown.getQuantity() + 1);
         }
-      } else {
-        List<ProductEntity> possibleProducts = findAllByName(c.getTitle());
-        if (!possibleProducts.isEmpty()) {
-          result.addAll(possibleProducts.stream()
-              .map(productEntity -> defaultArticleDTO(c, productMapper.entityToDto(productEntity)))
-              .collect(Collectors.toList()));
-        } else {
-          unknown.setQuantity(unknown.getQuantity() + 1);
-        }
       }
     }
     if (unknown.getQuantity() > 0) {

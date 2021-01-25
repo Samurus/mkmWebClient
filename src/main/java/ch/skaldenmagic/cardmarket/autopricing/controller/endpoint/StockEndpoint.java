@@ -56,6 +56,7 @@ public class StockEndpoint {
 
   @GetMapping("/articles")
   public List<ArticleDto> loadMyStock() {
+    //TODO: we have redundant entries in the database.... but why?
     List<ArticleEntity> articles = articleService.findAll();
     return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }

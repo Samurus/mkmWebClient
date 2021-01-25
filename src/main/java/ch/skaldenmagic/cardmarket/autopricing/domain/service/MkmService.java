@@ -3,6 +3,8 @@ package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Account;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MkmService {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(MkmService.class);
   public CardMarketService cardMarketService;
   @Value("${mkm.appToken}")
   private String _mkmAppToken;
@@ -39,6 +42,8 @@ public class MkmService {
           _mkmAccessTokenSecret);
       cardMarketService.setSandBoxMode(_sandboxMode);
     }
+    LOGGER.info("{} of {} requests used today.", cardMarketService.getRequestCount(),
+        cardMarketService.getRequestLimit());
     return cardMarketService;
   }
 

@@ -5,6 +5,8 @@ import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.AccountDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import de.cardmarket4j.entity.Account;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AccountService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
 
   @Autowired
   private AccountMapper accountMapper;

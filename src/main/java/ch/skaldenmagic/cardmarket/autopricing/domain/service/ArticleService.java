@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class ArticleService {
 
-  private static final Logger log = LoggerFactory.getLogger(ArticleService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ArticleService.class);
   private final ArticlePriceMapper articlePriceMapper;
   private final MkmService mkmService;
   private final ArticleRepository articleRepository;
@@ -65,6 +65,7 @@ public class ArticleService {
   }
 
   public List<ArticleEntity> findAll() {
+    LOGGER.info("Fetch all Articles in Database"); //Test Log to see if Logback does something
     return articleRepository.findAll();
   }
 
@@ -119,6 +120,7 @@ public class ArticleService {
    * @return related Articles
    */
   public List<ArticleEntity> findAllByProduct(Long productId) {
+
     return articleRepository.findAllByProductId(productId);
   }
 
@@ -138,7 +140,6 @@ public class ArticleService {
   public List<ArticleEntity> reloadStockFromMkm() throws IOException {
     articleRepository.deleteAll();
     List<Article> stock = mkmService.getCardMarket().getStockService().getStock();
-    log.info("Requests used today: " + mkmService.getCardMarket().getRequestCount());
     List<ArticleEntity> stockEntities = stock.stream().map(articleMapper::mkmToEntity)
         .collect(Collectors.toList());
 

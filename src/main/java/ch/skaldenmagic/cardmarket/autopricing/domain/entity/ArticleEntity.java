@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "article")
+@Table(name = "article", uniqueConstraints = {
+    @UniqueConstraint(name = "articleId", columnNames = {"articleId"})})
 public class ArticleEntity extends BaseEntity {
 
   private Integer articleId;

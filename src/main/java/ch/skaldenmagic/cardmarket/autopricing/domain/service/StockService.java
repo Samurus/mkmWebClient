@@ -54,9 +54,6 @@ public class StockService {
       stock = mkmService.getCardMarket().getStockService().getStock();
     } catch (IOException e) {
       throw new MkmAPIException(de.cardmarket4j.service.StockService.class, "getStock()");
-    } finally {
-      LOG.info("{} of {} requests used today.", mkmService.getCardMarket().getRequestCount(),
-          mkmService.getCardMarket().getRequestLimit());
     }
     result = articleService.saveOrUpdate(stock);
     return result;

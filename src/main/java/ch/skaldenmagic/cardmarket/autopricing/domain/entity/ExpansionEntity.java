@@ -34,7 +34,7 @@ public class ExpansionEntity extends BaseEntity {
   private Integer iconCode;
   private LocalDateTime releaseDate;
   private Game game;
-
+ //Todo: add localizations
   @Override
   public boolean equals(Object o) {
     if (this == o) {
