@@ -110,8 +110,11 @@ public class ProductService {
     unkonwProduct.setName("Unknown Card");
     unkonwProduct.setImageUrl("./img/items/1/WAR/371876.jpg");
     unknown.setComment("Unkwon Article");
+    unknown.setCondition(Condition.POOR);
+    unknown.setLastEdited(LocalDateTime.now());
     unknown.setProduct(unkonwProduct);
     unknown.setQuantity(0);
+    unknown.setPrice(BigDecimal.ZERO);
     for (Card c : sorterCards) {
       ExpansionEntity expansion = expansionService.getByCode(c.getSet());
       if (expansion != null) {
