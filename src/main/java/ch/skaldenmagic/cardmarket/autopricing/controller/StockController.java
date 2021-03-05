@@ -7,6 +7,7 @@ import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.ArticleService;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.ExpansionServie;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.StockService;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,12 +59,6 @@ public class StockController {
     return new ResponseEntity<>(stockService.postNewArticlesToStock(articleDtos), HttpStatus.OK);
   }
 
-  @GetMapping("/articles/expansion/name/{name}")
-  public List<ArticleDto> findAllArticlesWithCheapestPriceByExpansionName(
-      @PathVariable("name") String name) throws IOException {
-    return articleService.findAllArticlesWithCheapestPriceByExpansion(name);
-  }
-
   //TODO return DTO and Move to designated controller
   @GetMapping("/expansion/{name}")
   public List<ExpansionEntity> findExpansionsByName(@PathVariable("name") String name)
@@ -79,8 +74,8 @@ public class StockController {
   }
 
   @PutMapping("/articles")
-  public List<ArticleDto> updateArticlesInStock(
-      @RequestBody List<ArticleDto> articleDtos) {
-    return null;
+  public List<ArticleDto> updateArticlesInStock(@RequestBody List<ArticleDto> articleDtos)
+      throws MkmAPIException {
+    return stockService.updateArticlesInStock(articleDtos);
   }
 }
