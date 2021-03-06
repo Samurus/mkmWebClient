@@ -74,8 +74,9 @@ public class StockController {
   }
 
   @PutMapping("/articles")
-  public List<ArticleDto> updateArticlesInStock(@RequestBody List<ArticleDto> articleDtos)
+  public ResponseEntity<List<ArticleDto>> updateArticlesInStock(
+      @RequestBody List<ArticleDto> articleDtos)
       throws MkmAPIException {
-    return stockService.updateArticlesInStock(articleDtos);
+    return new ResponseEntity<>(stockService.updateArticlesInStock(articleDtos), HttpStatus.OK);
   }
 }

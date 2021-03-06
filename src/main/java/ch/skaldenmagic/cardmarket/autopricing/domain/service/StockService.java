@@ -66,31 +66,34 @@ public class StockService {
    * @return Uploaded Articles as Dtos.
    */
   public List<ArticleDto> postNewArticlesToStock(List<ArticleDto> articleDtos) {
-    List<CardMarketArticle> articlesToPost = articleDtos.stream()
-        .filter(articleDto -> !articleDto.getProduct().getName().equals("Unknown Card"))
-        .map(articleMapper::dtoToMkm)
-        .collect(
-            Collectors.toList());
-    List<ArticleEntity> postedArticles = new ArrayList<>();
-    int last = 0;
-    int size = articlesToPost.size();
+    try {
+      List<CardMarketArticle> articlesToPost = articleDtos.stream()
+          .filter(articleDto -> !articleDto.getProduct().getName().equals("Unknown Card"))
+          .map(articleMapper::dtoToMkm)
+          .collect(
+              Collectors.toList());
+      List<ArticleEntity> postedArticles = new ArrayList<>();
+      int last = 0;
+      int size = articlesToPost.size();
 
-    while (size - last >= 100) {
-      postedArticles.addAll(insertArticleList(articlesToPost, last, last += 100));
-    }
-    if (last < size) {
-      postedArticles.addAll(insertArticleList(articlesToPost, last, size));
-    }
+      while (size - last >= 100) {
+        postedArticles.addAll(insertArticleList(articlesToPost, last, last += 100));
+      }
+      if (last < size) {
+        postedArticles.addAll(insertArticleList(articlesToPost, last, size));
+      }
 
-    for (ArticleEntity articleEntity : postedArticles) {
-      ProductEntity productEntity = productService
-          .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
-              () -> new MkmAPIException(ProductService.class, "findProductByID()")
-          );
-      articleEntity.setProduct(productEntity);
+      for (ArticleEntity articleEntity : postedArticles) {
+        ProductEntity productEntity = productService
+            .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
+                () -> new MkmAPIException(ProductService.class, "findProductByID()")
+            );
+        articleEntity.setProduct(productEntity);
+      }
+      return articleService.saveAll(postedArticles);
+    } catch (NullPointerException inEx) {
+      throw new MkmAPIException(StockService.class, "postNewArticlesToStock");
     }
-
-    return articleService.saveAll(postedArticles);
   }
 
   public List<ArticleDto> updateArticlesInStock(List<ArticleDto> articleDtos) {
@@ -108,7 +111,7 @@ public class StockService {
     if (last < size) {
       updatedArticles.addAll(updateArticleList(articlesToUpdate, last, size));
     }
-    return null;
+    return updatedArticles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
   //TODO: could be a Strategy if update or insert

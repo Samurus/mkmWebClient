@@ -5,6 +5,7 @@ import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.ProductService;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.StockService;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.UploadService;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class SorterUploadController {
 
   @PostMapping("/tomkm")
   public ResponseEntity<List<ArticleDto>> postToMkm(
-      @RequestBody List<ArticleDto> articleDtos) {
+      @RequestBody List<ArticleDto> articleDtos) throws MkmAPIException {
     System.out.println(articleDtos);
     return new ResponseEntity<>(stockService.postNewArticlesToStock(articleDtos), HttpStatus.OK);
   }

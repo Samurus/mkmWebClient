@@ -1,6 +1,7 @@
 package ch.skaldenmagic.cardmarket.autopricing.controller.error;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.EntityNotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +40,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
       EntityNotFoundException ex) {
     ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
     apiError.setMessage(ex.getMessage());
+    return buildResponseEntity(apiError);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  protected ResponseEntity<Object> handleConstraintViolation(
+      ConstraintViolationException ex) {
+    ApiError apiError = new ApiError(HttpStatus.CONFLICT);
+    String constraintName = ex.getConstraintName();
+    String cause = ex.getCause().getMessage();
+    apiError.setMessage("Constraint Violation: " + constraintName + "\n" + cause);
     return buildResponseEntity(apiError);
   }
 
