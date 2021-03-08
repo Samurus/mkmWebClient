@@ -1,17 +1,17 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.cardmarket4j.entity.enumeration.Game;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -27,13 +27,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
-public class ProductEntity extends BaseEntity {
+public class ProductEntity {
 
-
-  @JsonIgnore
-  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = false)
-  private Collection<ArticleEntity> articleEntities = new ArrayList<>();
-
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
   @Column(name = "product_id")
   private Integer productId;
   private Integer metaproductId;

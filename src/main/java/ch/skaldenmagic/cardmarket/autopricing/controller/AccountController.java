@@ -2,6 +2,7 @@ package ch.skaldenmagic.cardmarket.autopricing.controller;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.AccountDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.AccountService;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,13 @@ public class AccountController {
   @Autowired
   private AccountService accountService;
 
-  @GetMapping("/")
+  @GetMapping
   public AccountDto getAccount() {
     return accountService.getAccount();
+  }
+
+  @GetMapping("/requestCounter")
+  public Map<String, Integer> getRequestCounter() {
+    return accountService.getRequestCounter();
   }
 }

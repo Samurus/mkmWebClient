@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neovisionaries.i18n.LanguageCode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,10 +22,12 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "localization")
-@AllArgsConstructor
 @NoArgsConstructor
-public class LocalizationEntity extends BaseEntity {
+public class LocalizationEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
   private LanguageCode language;
   private String productName;
 
@@ -32,4 +36,10 @@ public class LocalizationEntity extends BaseEntity {
   @JsonIgnoreProperties("product")
   private ProductEntity product;
 
+  public LocalizationEntity(LanguageCode language, String productName,
+      ProductEntity product) {
+    this.language = language;
+    this.productName = productName;
+    this.product = product;
+  }
 }

@@ -1,6 +1,9 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +20,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "reprint")
-public class ProductReprintEntity extends BaseEntity {
+public class ProductReprintEntity {
 
   int productId;
   int reprintProductId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 }

@@ -8,9 +8,13 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +26,16 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "article")
-public class ArticleEntity extends BaseEntity {
+@Table(name = "article", uniqueConstraints = {
+    @UniqueConstraint(name = "articleId", columnNames = {"articleId"})})
+public class ArticleEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private Integer articleId;
-  //private Integer productId;
-  //can be represented within the ProductEntity and is redundant
-  @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
   @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
   private ProductEntity product;
 

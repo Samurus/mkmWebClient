@@ -54,9 +54,6 @@ public class StockService {
       stock = mkmService.getCardMarket().getStockService().getStock();
     } catch (IOException e) {
       throw new MkmAPIException(de.cardmarket4j.service.StockService.class, "getStock()");
-    } finally {
-      LOG.info("{} of {} requests used today.", mkmService.getCardMarket().getRequestCount(),
-          mkmService.getCardMarket().getRequestLimit());
     }
     result = articleService.saveOrUpdate(stock);
     return result;
@@ -69,33 +66,55 @@ public class StockService {
    * @return Uploaded Articles as Dtos.
    */
   public List<ArticleDto> postNewArticlesToStock(List<ArticleDto> articleDtos) {
-    List<CardMarketArticle> articlesToPost = articleDtos.stream()
-        .filter(articleDto -> !articleDto.getProduct().getName().equals("Unknown Card"))
+    try {
+      List<CardMarketArticle> articlesToPost = articleDtos.stream()
+          .filter(articleDto -> !articleDto.getProduct().getName().equals("Unknown Card"))
+          .map(articleMapper::dtoToMkm)
+          .collect(
+              Collectors.toList());
+      List<ArticleEntity> postedArticles = new ArrayList<>();
+      int last = 0;
+      int size = articlesToPost.size();
+
+      while (size - last >= 100) {
+        postedArticles.addAll(insertArticleList(articlesToPost, last, last += 100));
+      }
+      if (last < size) {
+        postedArticles.addAll(insertArticleList(articlesToPost, last, size));
+      }
+
+      for (ArticleEntity articleEntity : postedArticles) {
+        ProductEntity productEntity = productService
+            .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
+                () -> new MkmAPIException(ProductService.class, "findProductByID()")
+            );
+        articleEntity.setProduct(productEntity);
+      }
+      return articleService.saveAll(postedArticles);
+    } catch (NullPointerException inEx) {
+      throw new MkmAPIException(StockService.class, "postNewArticlesToStock");
+    }
+  }
+
+  public List<ArticleDto> updateArticlesInStock(List<ArticleDto> articleDtos) {
+    List<CardMarketArticle> articlesToUpdate = articleDtos.stream()
         .map(articleMapper::dtoToMkm)
         .collect(
             Collectors.toList());
-    List<ArticleEntity> postedArticles = new ArrayList<>();
+    List<ArticleEntity> updatedArticles = new ArrayList<>();
     int last = 0;
-    int size = articlesToPost.size();
+    int size = articlesToUpdate.size();
 
     while (size - last >= 100) {
-      postedArticles.addAll(insertArticleList(articlesToPost, last, last += 100));
+      updatedArticles.addAll(updateArticleList(articlesToUpdate, last, last += 100));
     }
     if (last < size) {
-      postedArticles.addAll(insertArticleList(articlesToPost, last, size));
+      updatedArticles.addAll(updateArticleList(articlesToUpdate, last, size));
     }
-
-    for (ArticleEntity articleEntity : postedArticles) {
-      ProductEntity productEntity = productService
-          .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
-              () -> new MkmAPIException(ProductService.class, "findProductByID()")
-          );
-      articleEntity.setProduct(productEntity);
-    }
-
-    return articleService.saveAll(postedArticles);
+    return updatedArticles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
+  //TODO: could be a Strategy if update or insert
 
   private List<ArticleEntity> insertArticleList(List<CardMarketArticle> articles, int start,
       int stop) {
@@ -104,9 +123,22 @@ public class StockService {
       result = mkmService.getCardMarket().getStockService()
           .insertListArticles(articles.subList(start, stop));
     } catch (IOException e) {
-      LOG.error(e.getMessage(), e.getStackTrace());
+      LOG.error(e.getMessage());
       throw new MkmAPIException(de.cardmarket4j.service.StockService.class,
           "inserListArticles()");
+    }
+    return result.stream().map(articleMapper::mkmToEntity).collect(Collectors.toList());
+  }
+
+  private List<ArticleEntity> updateArticleList(List<CardMarketArticle> articles, int start,
+      int stop) {
+    List<Article> result;
+    try {
+      result = mkmService.getCardMarket().getStockService()
+          .editListArticles(articles.subList(start, stop));
+    } catch (IOException e) {
+      LOG.error(e.getMessage());
+      throw new MkmAPIException(de.cardmarket4j.service.StockService.class, "editListArticles()");
     }
     return result.stream().map(articleMapper::mkmToEntity).collect(Collectors.toList());
   }

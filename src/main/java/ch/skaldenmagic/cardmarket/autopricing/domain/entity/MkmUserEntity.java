@@ -1,9 +1,10 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,8 +24,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "mkm_user")
-public class MkmUserEntity extends BaseEntity {
+public class MkmUserEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
   private int userId;
   private String userName;
   private LocalDateTime registrationDate;
@@ -33,8 +37,4 @@ public class MkmUserEntity extends BaseEntity {
   private String country;
   private int sellCount;
   private int soldItems;
-  @OneToMany
-  private Set<ArticleEntity> knownArticles;
-
-
 }
