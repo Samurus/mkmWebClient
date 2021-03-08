@@ -22,13 +22,10 @@ public interface ProductMapper {
 
   ProductDto entityToDto(ProductEntity productEntity);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "version", ignore = true)
   @Mapping(target = "localizations", ignore = true)
   ProductEntity mkmToEntity(Product product);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   void updateSecondWithFirst(ProductEntity source, @MappingTarget ProductEntity target);
-
 
 }

@@ -23,8 +23,6 @@ public interface ArticleMapper {
 
   ArticleDto entityToDto(ArticleEntity article);
 
-  @Mapping(target = "version", ignore = true)
-  @Mapping(target = "id", ignore = true)
   @Mapping(target = "product.productId", source = "productId")
   @Mapping(target = "product.name", source = "product.name")
   @Mapping(target = "product.imageUrl", source = "product.imageUrl")

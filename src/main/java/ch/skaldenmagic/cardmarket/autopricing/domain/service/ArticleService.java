@@ -70,8 +70,7 @@ public class ArticleService {
 
   public List<ArticleDto> reloadStockFromMkm() {
     try {
-      articleRepository
-          .deleteAll(); //TODO uups: have to remove articles from product relation first :D
+      articleRepository.deleteAll();
       List<ArticleEntity> mkmStock = mkmService.getCardMarket().getStockService().getStock()
           .stream().map(articleMapper::mkmToEntity).collect(
               Collectors.toList());
@@ -85,8 +84,7 @@ public class ArticleService {
         articleEntity.setProduct(productEntity);
       }
 
-      return saveAll(
-          mkmStock);
+      return saveAll(mkmStock);
     } catch (IOException e) {
 
       throw new MkmAPIException(this.getClass(), "reloadStockFromMKM", e.getMessage());
@@ -96,8 +94,7 @@ public class ArticleService {
 
   public List<ArticleDto> saveAll(List<ArticleEntity> articleEntities) {
     return articleRepository.saveAll(articleEntities).stream().map(articleMapper::entityToDto)
-        .collect(
-            Collectors.toList());
+        .collect(Collectors.toList());
   }
 
   /**
