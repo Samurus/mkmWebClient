@@ -1,11 +1,13 @@
 package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ArticleEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ArticleMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ProductMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.ArticleRepository;
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.PriceRepository;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import de.cardmarket4j.entity.Article;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,12 +65,33 @@ public class ArticleService {
    * @return related Articles
    */
   public List<ArticleEntity> findAllByProduct(Long productId) {
-
     return articleRepository.findAllByProductId(productId);
   }
 
-  public List<ArticleEntity> reloadStockFromMkm() throws IOException {
-    return null;
+  public List<ArticleDto> reloadStockFromMkm() {
+    try {
+      articleRepository
+          .deleteAll(); //TODO uups: have to remove articles from product relation first :D
+      List<ArticleEntity> mkmStock = mkmService.getCardMarket().getStockService().getStock()
+          .stream().map(articleMapper::mkmToEntity).collect(
+              Collectors.toList());
+
+      for (ArticleEntity articleEntity : mkmStock) {
+        ProductEntity productEntity = productService
+            .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
+                () -> new MkmAPIException(ProductService.class, "findProductByID()",
+                    articleEntity.getProduct().getProductId().toString())
+            );
+        articleEntity.setProduct(productEntity);
+      }
+
+      return saveAll(
+          mkmStock);
+    } catch (IOException e) {
+
+      throw new MkmAPIException(this.getClass(), "reloadStockFromMKM", e.getMessage());
+
+    }
   }
 
   public List<ArticleDto> saveAll(List<ArticleEntity> articleEntities) {

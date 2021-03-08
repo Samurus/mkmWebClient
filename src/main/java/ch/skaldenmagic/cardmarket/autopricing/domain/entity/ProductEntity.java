@@ -31,7 +31,8 @@ public class ProductEntity extends BaseEntity {
 
 
   @JsonIgnore
-  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = false)
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = true, cascade = {
+      CascadeType.ALL})
   private Collection<ArticleEntity> articleEntities = new ArrayList<>();
 
   @Column(name = "product_id")

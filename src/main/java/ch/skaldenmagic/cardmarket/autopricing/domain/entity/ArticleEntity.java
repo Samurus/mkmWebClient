@@ -28,9 +28,7 @@ import lombok.Setter;
 public class ArticleEntity extends BaseEntity {
 
   private Integer articleId;
-  //private Integer productId;
-  //can be represented within the ProductEntity and is redundant
-  @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
   @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
   private ProductEntity product;
 

@@ -1,5 +1,6 @@
 package de.cardmarket4j.service;
 
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import com.google.gson.JsonElement;
 import de.cardmarket4j.AbstractService;
 import de.cardmarket4j.CardMarketService;
@@ -212,8 +213,6 @@ public class StockService extends AbstractService {
     }
     xml.append("</request>");
     JsonElement response = request("stock", HTTPMethod.POST, xml.toString());
-    // TODO: might be nice if failed requests would throw a runtime exception with the error message
-    // TODO: not only might be nice but mandatory. We want to know why something failed.
     List<Article> listArticle = new ArrayList<>();
     for (JsonElement jElement : response.getAsJsonObject().get("inserted").getAsJsonArray()) {
       if (jElement.getAsJsonObject().get("success").getAsBoolean()) {
@@ -223,6 +222,9 @@ public class StockService extends AbstractService {
         LOGGER.error("Failed to add Article {} because {}",
             jElement.getAsJsonObject().get("tried"),
             jElement.getAsJsonObject().get("error"));
+        throw new MkmAPIException(this.getClass(), "insertListArticles()",
+            jElement.getAsJsonObject().get("tried").getAsString(),
+            jElement.getAsJsonObject().get("error").getAsString());
       }
     }
     return listArticle;

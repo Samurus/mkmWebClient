@@ -52,7 +52,7 @@ public class StockController {
    * @return List of the new added Articles
    * @throws IOException
    */
-  @PostMapping("/articles")
+  @PostMapping
   public ResponseEntity<List<ArticleDto>> addArticlesToStock(
       @RequestBody List<ArticleDto> articleDtos)
       throws IOException {
@@ -66,14 +66,19 @@ public class StockController {
     return expansionService.findAllByNameContaining(name);
   }
 
-  @GetMapping("/articles")
+  @GetMapping
   public List<ArticleDto> loadMyStock() {
     //TODO: we have redundant entries in the database.... but why?
     List<ArticleEntity> articles = articleService.findAll();
     return articles.stream().map(articleMapper::entityToDto).collect(Collectors.toList());
   }
 
-  @PutMapping("/articles")
+  @GetMapping("/sync")
+  public List<ArticleDto> syncStockWithMKM() {
+    return articleService.reloadStockFromMkm();
+  }
+
+  @PutMapping
   public ResponseEntity<List<ArticleDto>> updateArticlesInStock(
       @RequestBody List<ArticleDto> articleDtos)
       throws MkmAPIException {
