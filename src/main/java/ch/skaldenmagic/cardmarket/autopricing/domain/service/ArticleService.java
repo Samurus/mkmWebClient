@@ -70,7 +70,7 @@ public class ArticleService {
 
   public List<ArticleDto> reloadStockFromMkm() {
     try {
-      articleRepository.deleteAll();
+      articleRepository.deleteAllInBatch();
       List<ArticleEntity> mkmStock = mkmService.getCardMarket().getStockService().getStock()
           .stream().map(articleMapper::mkmToEntity).collect(
               Collectors.toList());
