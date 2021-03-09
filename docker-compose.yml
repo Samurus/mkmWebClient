@@ -14,11 +14,9 @@ services:
     volumes:
       - mkm-database-data:/var/lib/postgresql/data/
   mkmClient-BE:
-    image: mkmclient/be
-    build:
-      context: .
-      args:
-        - profile=dev
+    image: mkmclient/be:latest
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
     networks:
       app_net:
         ipv4_address: 172.16.100.20

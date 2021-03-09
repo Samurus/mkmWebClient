@@ -6,5 +6,4 @@ RUN mkdir logs
 RUN chmod a+rwx -R logs
 USER spring:spring
 COPY /build/libs/*.jar autopricing.jar
-ENV spring_profiles_active=${profile}
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=", "autopricing.jar"]
+ENTRYPOINT ["java","-jar", "autopricing.jar"]
