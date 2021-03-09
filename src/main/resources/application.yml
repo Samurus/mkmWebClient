@@ -7,6 +7,6 @@ spring:
     generate-ddl: true
   datasource:
     platform: postgres
-    url: jdbc:postgresql://172.16.100.10:5432/mkmClient_db_local
+    url: jdbc:postgresql://localhost:5432/mkmClient_db_local
     username: admin
     password: secret
