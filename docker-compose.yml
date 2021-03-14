@@ -16,7 +16,7 @@ services:
   mkmClient-BE:
     image: mkmclient/be:latest
     environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
+      - "SPRING_PROFILES_ACTIVE=prod"
     networks:
       app_net:
         ipv4_address: 172.16.100.20
@@ -24,12 +24,8 @@ services:
       - 8081:8081
   mkmClient-FE:
     image: mkmclient/fe:latest
-    networks:
-      app_net:
-        aliases:
-          - "skaldenmagic"
-        ipv4_address: 172.16.100.100
-
+    ports:
+      - 80:80
 volumes:
   mkm-database-data:
 

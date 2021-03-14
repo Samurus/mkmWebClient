@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import de.cardmarket4j.entity.enumeration.HTTPMethod;
 import de.cardmarket4j.service.AccountService;
 import de.cardmarket4j.service.AuthenticationService;
@@ -176,10 +177,18 @@ public class CardMarketService {
 
       String responseString = sb.toString();
       LOGGER.trace("Response Body:\t{}", responseString);
-      JsonElement jResponse = JsonParser.parseString(responseString);
-      LOGGER.debug("Response:\t{} {}", responseCode, jResponse);
-      lastResponse = new Pair<>(responseCode, jResponse);
-      return lastResponse;
+      try {
+        JsonElement jResponse = JsonParser.parseString(responseString);
+        LOGGER.debug("Response:\t{} {}", responseCode, jResponse);
+        lastResponse = new Pair<>(responseCode, jResponse);
+        return lastResponse;
+      } catch (JsonSyntaxException inEx) {
+        LOGGER.error("Malformed Response:\t{}", responseString);
+        JsonElement errorResponse = JsonParser
+            .parseString("{'error':true,'message':'" + responseString + "'}");
+        lastResponse = new Pair<>(responseCode, errorResponse);
+        return lastResponse;
+      }
     } catch (MalformedURLException | InvalidKeyException | NoSuchAlgorithmException | NullPointerException e) {
       LOGGER.error("An critical error occured", e);
       System.exit(-1);

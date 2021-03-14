@@ -23,6 +23,7 @@ public interface ProductMapper {
   ProductDto entityToDto(ProductEntity productEntity);
 
   @Mapping(target = "localizations", ignore = true)
+  @Mapping(target = "priceGuide", ignore = true)
   ProductEntity mkmToEntity(Product product);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

@@ -2,6 +2,7 @@ package ch.skaldenmagic.cardmarket.autopricing.domain.service;
 
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ExpansionEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.LocalizationEntity;
+import ch.skaldenmagic.cardmarket.autopricing.domain.entity.MkmPriceGuide;
 import ch.skaldenmagic.cardmarket.autopricing.domain.entity.ProductEntity;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.LocalizationMapper;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.ProductMapper;
@@ -9,6 +10,7 @@ import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ArticleDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.mapper.dtos.ProductDto;
 import ch.skaldenmagic.cardmarket.autopricing.domain.model.Card;
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.ProductRepository;
+import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import ch.skaldenmagic.cardmarket.autopricing.util.CSVUtil;
 import ch.skaldenmagic.cardmarket.autopricing.util.FileImport;
 import com.neovisionaries.i18n.LanguageCode;
@@ -48,6 +50,7 @@ public class ProductService {
   private final ProductRepository productRepository;
   private final MkmService mkmService;
   private final ExpansionServie expansionService;
+  private final MkmPriceGuideService priceGuideService;
 
   @Autowired
   public ProductService(
@@ -55,12 +58,14 @@ public class ProductService {
       LocalizationMapper localizationMapper,
       ProductRepository productRepository,
       MkmService mkmService,
-      ExpansionServie expansionService) {
+      ExpansionServie expansionService,
+      MkmPriceGuideService priceGuideService) {
     this.productMapper = productMapper;
     this.localizationMapper = localizationMapper;
     this.productRepository = productRepository;
     this.mkmService = mkmService;
     this.expansionService = expansionService;
+    this.priceGuideService = priceGuideService;
   }
 
   public void deleteAll() {
@@ -135,9 +140,8 @@ public class ProductService {
 
   public void initProductDatabase() {
     try {
-      expansionService.updateExpansionDB();
-      List<ExpansionEntity> expansions = expansionService.findAll();
-
+      List<ExpansionEntity> expansions = expansionService.updateExpansionDB();
+      //TODO: init Productfilter (and use it accurate) only for unknown expansions -> flush transactions as well manualy
       List<ProductEntity> mkmProducts = new ArrayList<>();
       for (ExpansionEntity expansion : expansions) {
         Set<Product> apiRes = mkmService.getCardMarket().getMarketplaceService()
@@ -146,15 +150,58 @@ public class ProductService {
           ProductEntity e = productMapper.mkmToEntity(p);
           Set<LocalizationEntity> localizations = localizationMapper
               .mapToLocalization(p.getMapLocalizedNames(), e);
-          //localizationService.saveAll(localizations);
           e.setLocalizations(localizations);
           e.setExpansion(expansion);
           mkmProducts.add(e);
         }
       }
       productRepository.saveAll(mkmProducts);
+      productRepository.flush();
     } catch (IOException e) {
       //Todo handle exeptions correctly
+    }
+  }
+
+  public Optional<? extends ProductEntity> loadMkmProduct(Integer productId) {
+    try {
+      Product product = mkmService.getCardMarket().getMarketplaceService()
+          .getProductDetails(productId);
+      ProductEntity e = productMapper.mkmToEntity(product);
+      if (product.getPriceGuide() != null) {
+        MkmPriceGuide mkmPriceGuide = new MkmPriceGuide();
+
+        mkmPriceGuide.setSell(product.getPriceGuide().getSell());
+        mkmPriceGuide.setLow(product.getPriceGuide().getLow());
+        mkmPriceGuide.setLowExPlus(product.getPriceGuide().getLowExPlus());
+        mkmPriceGuide.setLowFoil(product.getPriceGuide().getLowFoil());
+        mkmPriceGuide.setAvg(product.getPriceGuide().getAvg());
+        mkmPriceGuide.setTrend(product.getPriceGuide().getTrend());
+
+        mkmPriceGuide = priceGuideService.save(mkmPriceGuide);
+        e.setPriceGuide(mkmPriceGuide);
+      }
+      Set<LocalizationEntity> localizations = localizationMapper
+          .mapToLocalization(product.getMapLocalizedNames(), e);
+      if (product.getExpansion() != null) {
+        ExpansionEntity expansionEntity = expansionService
+            .getByExpansionId(product.getExpansion().getExpansionId());
+        if (expansionEntity == null) {
+          expansionEntity = new ExpansionEntity();
+          expansionEntity.setName(product.getExpansionName());
+          expansionEntity.setCode(product.getExpansion().getCode());
+          expansionEntity.setExpansionId(product.getExpansion().getExpansionId());
+          expansionService.save(expansionEntity);
+        }
+        e.setExpansion(expansionEntity);
+      }
+
+      e.setLocalizations(localizations);
+
+      e = productRepository.saveAndFlush(e);
+      return Optional.of(e);
+    } catch (IOException e) {
+      throw new MkmAPIException(ProductService.class, "failed load single Product: ",
+          productId.toString());
     }
   }
 

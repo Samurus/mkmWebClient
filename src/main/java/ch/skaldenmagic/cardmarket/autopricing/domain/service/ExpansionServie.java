@@ -54,14 +54,20 @@ public class ExpansionServie {
     return expansionRepository.saveAll(entities);
   }
 
+  public ExpansionEntity save(ExpansionEntity expansionEntity) {
+    return expansionRepository.save(expansionEntity);
+  }
+
   public List<ExpansionEntity> updateExpansionDB() throws IOException {
     Set<Expansion> expansions = mkmService.getCardMarket().getMarketplaceService()
-        .getExpansions(new ProductFilter("?"));
+        .getExpansions(new ProductFilter("games/1"));
     List<ExpansionEntity> entities = expansions.stream().map(expansionMapper::mkmToEntity)
         .collect(Collectors.toList());
     List<ExpansionEntity> existingEntities = findAll();
     entities.removeAll(existingEntities);
-    return expansionRepository.saveAll(entities);
+    entities = expansionRepository.saveAll(entities);
+    expansionRepository.flush();
+    return entities;
   }
 
 }
