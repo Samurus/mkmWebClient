@@ -1,6 +1,7 @@
 package de.cardmarket4j.service;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import de.cardmarket4j.AbstractService;
 import de.cardmarket4j.CardMarketService;
 import de.cardmarket4j.entity.Article;
@@ -78,8 +79,16 @@ public class MarketplaceService extends AbstractService {
   public Set<Product> getExpansionSingles(Integer expansionId) throws IOException {
     Set<Product> setProducts = new HashSet<>();
     JsonElement response = request("expansions/" + expansionId + "/singles", HTTPMethod.GET);
-    for (JsonElement jEle : response.getAsJsonObject().get("single").getAsJsonArray()) {
-      setProducts.add(JsonIO.getGson().fromJson(jEle, Product.class));
+    try {
+      if (!response.getAsJsonObject().get("single").isJsonNull()) {
+        for (JsonElement jEle : response.getAsJsonObject().get("single").getAsJsonArray()) {
+          setProducts.add(JsonIO.getGson().fromJson(jEle, Product.class));
+        }
+      } else {
+        LOGGER.error("Request responded with error: {}", response.getAsString());
+      }
+    } catch (JsonSyntaxException inEx) {
+      LOGGER.error("Error during parsing {}", response.getAsString());
     }
     return setProducts;
   }

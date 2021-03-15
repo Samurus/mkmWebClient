@@ -9,6 +9,7 @@ import ch.skaldenmagic.cardmarket.autopricing.domain.repository.ArticleRepositor
 import ch.skaldenmagic.cardmarket.autopricing.domain.repository.PriceRepository;
 import ch.skaldenmagic.cardmarket.autopricing.domain.service.exceptions.MkmAPIException;
 import de.cardmarket4j.entity.Article;
+import de.cardmarket4j.entity.enumeration.Game;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,14 +73,17 @@ public class ArticleService {
     try {
       articleRepository.deleteAllInBatch();
       List<ArticleEntity> mkmStock = mkmService.getCardMarket().getStockService().getStock()
-          .stream().map(articleMapper::mkmToEntity).collect(
+          .stream()
+          .filter(article -> article.getProduct().getGame()
+              .equals(Game.MTG)) //We only support mtg at the moment
+          .map(articleMapper::mkmToEntity).collect(
               Collectors.toList());
 
       for (ArticleEntity articleEntity : mkmStock) {
         ProductEntity productEntity = productService
-            .findByProductId(articleEntity.getProduct().getProductId()).orElseThrow(
-                () -> new MkmAPIException(ProductService.class, "findProductByID()",
-                    articleEntity.getProduct().getProductId().toString())
+            .findByProductId(articleEntity.getProduct().getProductId()).orElseGet(
+                () -> productService.loadMkmProduct(articleEntity.getProduct().getProductId())
+                    .orElseThrow()
             );
         articleEntity.setProduct(productEntity);
       }

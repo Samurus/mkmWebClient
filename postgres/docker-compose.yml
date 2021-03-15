@@ -1,8 +1,8 @@
 version: '3'
 services:
-  mkmClient_db_local:
+  mkmClient_db_dev:
     image: postgres
-    container_name: mkmClient_db_local
+    container_name: mkmClient_db_dev
     ports:
       - "5432:5432"
     env_file:
