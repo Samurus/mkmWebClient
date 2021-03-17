@@ -27,13 +27,13 @@ public class PriceService {
   @Autowired
   private MkmService mkmService;
 
-  @Value("${pricer.uri}")
+  @Value("${pricer.uri:http://localhost:18081/prod/pricer/}")
   private String pricerUri;
 
-  @Value("${pricer.user}")
+  @Value("${pricer.user:user}")
   private String pricerUserName;
 
-  @Value("${pricer.password}")
+  @Value("${pricer.password:password}")
   private String pricerPassword;
 
 
